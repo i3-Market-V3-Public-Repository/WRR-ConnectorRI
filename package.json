@@ -1,6 +1,6 @@
 {
   "name": "@UNPARALLEL/connector-ri",
-  "version": "1.0.31",
+  "version": "1.0.0",
   "description": "This connector implements the logic needed to connect o SDK-RI and SDK-Core, proving an abstraction used by the Web-RI",
   "main": "connector.js",
   "scripts": {
@@ -14,7 +14,9 @@
   "author": "UNPARALLEL Innovation, lda",
   "license": "ISC",
   "publishConfig": {
-    "@UNPARALLEL:registry":"https://gitlab.com/api/v4/projects/27911275/packages/npm/"
+    "@UNPARALLEL:registry": "https://gitlab.com/api/v4/projects/27911275/packages/npm/"
+  },
+  "dependencies": {
+    "url-search-params-polyfill": "^8.1.1"
   }
-
 }
