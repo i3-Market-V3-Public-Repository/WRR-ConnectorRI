@@ -1,5 +1,6 @@
 const fetch = require("node-fetch")
-require('url-search-params-polyfill');
+const _ = require('underscore')
+require('url-search-params-polyfill')
 
 module.exports = class Connector {
 
@@ -23,46 +24,97 @@ module.exports = class Connector {
     });
   }
 
-  getTemplate(){
+  async getTemplate(){
+    let result
     if(this.fetchFromSDK_RI){
-      return this.fetchData(this.endpoint, "GET", "offering/template")
+      result = await this.fetchData(this.endpoint, "GET", "offering/template")
+    }else{
+      result = await this.fetchDataBackplane(this.endpoint, "GET", "offering/offering-template")
     }
-    return this.fetchDataBackplane(this.endpoint, "GET", "offering/offering-template")
+    if(_.isEmpty(result)){
+      return []
+    }
+    return result
   }
 
-  getOffering(offeringId){
+  async getOffering(offeringId){
+    let result
     if(this.fetchFromSDK_RI){
-      return this.fetchData(this.endpoint, "GET", "offering/{id}/offeringId?offering_id="+offeringId, page, size)
+      result = await this.fetchData(this.endpoint, "GET", "offering/{id}/offeringId?offering_id="+offeringId, page, size)
+    }else{
+      result = await this.fetchDataBackplane(this.endpoint, "GET", "offering/"+offeringId+"/offeringId")
     }
-    return this.fetchDataBackplane(this.endpoint, "GET", "offering/"+offeringId+"/offeringId")
+    if(_.isEmpty(result)){
+      return []
+    }
+    return result
   }
 
-  getProviderOfferings(provider, page, size){
+  async getProviderOfferings(provider, page, size){
+    let result
     if(this.fetchFromSDK_RI){
-      return this.fetchData(this.endpoint, "GET", "offering/{id}/providerId?provider_id="+provider, page, size)
+      result = await this.fetchData(this.endpoint, "GET", "offering/{id}/providerId?provider_id="+provider, page, size)
+    }else{
+      result = await this.fetchDataBackplane(this.endpoint, "GET", "offering/"+provider+"/providerId", page, size)
     }
-    return this.fetchDataBackplane(this.endpoint, "GET", "offering/"+provider+"/providerId", page, size)
+    if(_.isEmpty(result)){
+      return []
+    }
+    return result
   }
 
-  getCategoryOfferings(category, page, size){
+  async getCategoryOfferings(category, page, size){
+    let result
     if(this.fetchFromSDK_RI){
-      return this.fetchData(this.endpoint, "GET", "offering/{category}?category="+category, page, size)
+      result = await this.fetchData(this.endpoint, "GET", "offering/{category}?category="+category, page, size)
+    }else{
+      result = await this.fetchDataBackplane(this.endpoint, "GET", "offering/"+category, page, size)
     }
-    return this.fetchDataBackplane(this.endpoint, "GET", "offering/"+category, page, size)
+    if(_.isEmpty(result)){
+      return []
+    }
+    return result
   }
 
-  getProviders(page, size){
+  async getProviders(page, size){
+    let result
     if(this.fetchFromSDK_RI){
       return "NO INFORMATION"
     }
-    return this.fetchDataBackplane(this.endpoint, "GET", "providers-list", page, size)
+    else{
+      result = await this.fetchDataBackplane(this.endpoint, "GET", "providers-list", page, size)
+    }
+    if(_.isEmpty(result)){
+      return []
+    }
+    return result
   }
 
-  getOfferings(page, size){
+  async getOfferings(page, size){
+    let result
+    if(this.fetchFromSDK_RI){
+      return "NO INFORMATION"
+    }else{
+      result = await this.fetchDataBackplane(this.endpoint, "GET", "offerings-list", page, size)
+    }
+    if(_.isEmpty(result)){
+      return []
+    }
+    return result
+  }
+
+  async getCategories(page, size){
+    let result
     if(this.fetchFromSDK_RI){
       return "NO INFORMATION"
     }
-    return this.fetchDataBackplane(this.endpoint, "GET", "offerings-list", page, size)
+    else{
+      result = await this.fetchDataBackplane(this.endpoint, "GET", "categories-list", page, size)
+    }
+    if(_.isEmpty(result)){
+      return []
+    }
+    return result
   }
 
   async getOfferingsByCategory(){
@@ -75,22 +127,23 @@ module.exports = class Connector {
       categories = await this.fetchDataBackplane(this.endpoint, "GET", "categories-list")
     }
 
-    let result = []
-    for(let i = 0; i < categories.length; i++){
-      const category = categories[i].name
-      const offerings = await this.getCategoryOfferings(category)
-      if(offerings){
-        const offeringsCount = (offerings.length > 0 ? offerings.length : 0)
-        const res = {
-          "category": category,
-          "offerings": offeringsCount
+    if(categories){
+      let result = []
+      for(let i = 0; i < categories.length; i++){
+        const category = categories[i].name
+        const offerings = await this.getCategoryOfferings(category)
+        if(offerings){
+          const offeringsCount = (offerings.length > 0 ? offerings.length : 0)
+          const res = {
+            "category": category,
+            "offerings": offeringsCount
+          }
+          result.push(res)
         }
-        result.push(res)
       }
+      return result
     }
-
-    return result
-
+    return []
   }
 
   async getAccessToken(){
@@ -140,7 +193,7 @@ module.exports = class Connector {
       redirect: 'follow'
     };
 
-   // TODO refactor this
+    // TODO refactor this
     var url = endpointUrl + service
     if(params){
       url += "="+params
@@ -201,6 +254,34 @@ module.exports = class Connector {
       if(res.status == 200){
         const jsonData = await res.json()
         return jsonData
+      }
+      return null
+    } catch(e){
+      console.log(e)
+      throw e
+    }
+  }
+
+  async registerOffering(data){
+
+    var headers = new fetch.Headers();
+    headers.append("Content-Type", "application/json");
+
+    var requestOptions = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(data),
+      redirect: 'follow'
+    };
+
+    const url = this.endpoint + "data-offering"
+    console.log("\nFetch URL: " + url)
+
+    try{
+      const res = await fetch(url, requestOptions)
+
+      if(res.status == 200){
+        console.log("\nData Offering '" + data.title + "' registered.")
       }
       return null
     } catch(e){
