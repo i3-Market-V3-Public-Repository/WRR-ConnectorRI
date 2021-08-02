@@ -1,5 +1,6 @@
 const fetch = require("node-fetch")
 const _ = require('underscore')
+const FetchError = require('./error.js')
 require('url-search-params-polyfill')
 
 module.exports = class Connector {
@@ -255,7 +256,10 @@ module.exports = class Connector {
         const jsonData = await res.json()
         return jsonData
       }
-      return null
+      else{
+        const jsonRes = await res.json()
+        throw new FetchError(jsonRes.error)
+      }
     } catch(e){
       console.log(e)
       throw e
@@ -283,7 +287,38 @@ module.exports = class Connector {
       if(res.status == 200){
         console.log("\nData Offering '" + data.title + "' registered.")
       }
-      return null
+      else{
+        const jsonRes = await res.json()
+        throw new FetchError(jsonRes.error)
+      }
+
+    } catch(e){
+      console.log(e)
+      throw e
+    }
+  }
+
+  async deleteOffering(offeringId){
+
+    var requestOptions = {
+      method: 'DELETE',
+      redirect: 'follow'
+    };
+
+    const url = this.endpoint + "delete-offering/" + offeringId
+    console.log("\nFetch URL: " + url)
+
+    try{
+      const res = await fetch(url, requestOptions)
+
+      if(res.status == 200){
+        console.log("\nData Offering '" + offeringId + "' deleted.")
+      }
+      else{
+        const jsonRes = await res.json()
+        throw new FetchError(jsonRes.error)
+      }
+
     } catch(e){
       console.log(e)
       throw e
