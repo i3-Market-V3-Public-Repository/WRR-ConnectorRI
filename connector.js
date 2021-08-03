@@ -9,8 +9,8 @@ module.exports = class Connector {
     this.username = user
     this.password = password
     if(user || password){
-      this.accessToken = this.getAccessToken()
       this.fetchFromSDK_RI = true
+      this.accessToken = this.getAccessToken()
       this.endpoint = "http://" + endpoint + "/SdkRefImpl/api/sdk-ri/"
     }
     else{
@@ -19,12 +19,9 @@ module.exports = class Connector {
     console.log("\nENDPOINT: " + this.endpoint)
   }
 
-  sleep(ms){
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
-
+  /*
+  * Get template to register an offering
+  */
   async getTemplate(){
     let result
     if(this.fetchFromSDK_RI){
@@ -38,6 +35,9 @@ module.exports = class Connector {
     return result
   }
 
+  /*
+  * Get offering details
+  */
   async getOffering(offeringId){
     let result
     if(this.fetchFromSDK_RI){
@@ -51,6 +51,9 @@ module.exports = class Connector {
     return result
   }
 
+  /*
+   * Get list of offerings from a provider
+   */
   async getProviderOfferings(provider, page, size){
     let result
     if(this.fetchFromSDK_RI){
@@ -64,6 +67,9 @@ module.exports = class Connector {
     return result
   }
 
+  /*
+  * Get list of offering from a category
+  */
   async getCategoryOfferings(category, page, size){
     let result
     if(this.fetchFromSDK_RI){
@@ -77,6 +83,9 @@ module.exports = class Connector {
     return result
   }
 
+  /*
+  * Get list of providers
+  */
   async getProviders(page, size){
     let result
     if(this.fetchFromSDK_RI){
@@ -91,6 +100,9 @@ module.exports = class Connector {
     return result
   }
 
+  /*
+  * Get list of offerings
+  */
   async getOfferings(page, size){
     let result
     if(this.fetchFromSDK_RI){
@@ -104,6 +116,9 @@ module.exports = class Connector {
     return result
   }
 
+  /*
+  * Get list of categories
+  */
   async getCategories(page, size){
     let result
     if(this.fetchFromSDK_RI){
@@ -118,6 +133,9 @@ module.exports = class Connector {
     return result
   }
 
+  /*
+  * Get list of offerings by category
+  */
   async getOfferingsByCategory(){
 
     let categories
@@ -147,6 +165,9 @@ module.exports = class Connector {
     return []
   }
 
+  /*
+  * Retrieve an access token from keycloak
+  */
   async getAccessToken(){
 
     const keycloak_endpoint = "http://83.149.125.78:8080"
@@ -184,6 +205,9 @@ module.exports = class Connector {
     }
   }
 
+  /*
+  *  Generic function to fetch data from SDK-RI endpoint
+  */
   async fetchData(endpointUrl, method, service, params = "", page = undefined, size = undefined){
     var headers = new fetch.Headers();
     headers.append("Authorization", "Bearer " + await this.accessToken);
@@ -212,8 +236,8 @@ module.exports = class Connector {
 
       if(res.status == 401){
         console.log("\nToken has expired. Generate a new access token.")
-        this.accessToken = _getAccessToken()
-        return await _fetchData(method, service, params)
+        this.accessToken = getAccessToken()
+        return await fetchData(method, service, params)
       }
       else if(res.status == 200){
         const jsonData = await res.json()
@@ -228,6 +252,9 @@ module.exports = class Connector {
     }
   }
 
+  /*
+  * Generic function to fetch data from semantic engine endpoint
+  */
   async fetchDataBackplane(semanticEngineUrl, method, endpoint, page = undefined, size = undefined){
     var requestOptions = {
       method: method,
@@ -266,6 +293,9 @@ module.exports = class Connector {
     }
   }
 
+  /*
+  * Register an offering
+  */
   async registerOffering(data){
 
     var headers = new fetch.Headers();
@@ -298,6 +328,9 @@ module.exports = class Connector {
     }
   }
 
+  /*
+  * Delete an offering
+  */
   async deleteOffering(offeringId){
 
     var requestOptions = {
