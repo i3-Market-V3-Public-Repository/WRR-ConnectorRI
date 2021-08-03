@@ -30,9 +30,20 @@ const connector = new Connector(ENDPOINT_URL)
 # for using Semantic Engine api functions, the ENDPOINT_URL must be the corresponding endpoint from each pilot. USERNAME and PASSWORD can't be described
 ```
 
+# Available functions
+````bash
+getOfferings() # get list of offerings
+getProviders() # get list of providers
+getOffering(OFFERING_ID) # get details for a specific offering
+getProviderOfferings(PROVIDER_ID) # get list of offerings from a provider
+getCategoryOfferings(CATEGORY) # get list of offering from a category
+getOfferingsByCategory() # get list of offerings by categories
+registerOffering(DATA) # register a new offering
+deleteOffering(OFFERING_ID) # delete an offering
+````
+
 # Example
 
 ````bash
-# Get the list of offerings from a provider
 const offerings = await connector.getProviderOfferings(PROVIDER_ID)
 ````
