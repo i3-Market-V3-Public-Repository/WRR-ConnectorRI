@@ -1,17 +1,17 @@
 # Connector-RI
 
-This connector implements the logic needed to connect the SDK-RI and SDK-Core, proving an abstraction used by the Web-RI
+This connector implements the logic needed to connect the SDK-RI and SDK-Core, providing an abstraction used by the Web-RI
 
 # Quick start
 
 ```bash
-npm install @UNPARALLEL/connector-ri
+npm install connector-ri
 ```
 
 # How to use
 
 ```bash
-import Connector from '@UNPARALLEL/connector-ri'
+import Connector from 'connector-ri'
 ```
 
 

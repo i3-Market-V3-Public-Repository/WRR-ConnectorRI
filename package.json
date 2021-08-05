@@ -1,23 +1,24 @@
 {
-  "name": "@UNPARALLEL/connector-ri",
-  "version": "1.0.4",
-  "description": "This connector implements the logic needed to connect o SDK-RI and SDK-Core, proving an abstraction used by the Web-RI",
+  "name": "connector-ri",
+  "version": "1.1.0",
+  "description": "This connector implements the logic needed to connect the SDK-RI and SDK-Core, providing an abstraction used by the Web-RI",
   "main": "connector.js",
+  "dependencies": {
+    "url-search-params-polyfill": "^8.1.1",
+    "underscore": "^1.13.1"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/UNPARALLEL/H2020/i3-market/connector-ri"
+    "url": "git+https://gitlab.com/UNPARALLEL/H2020/i3-market/connector-ri.git"
   },
-  "keywords": [],
   "author": "UNPARALLEL Innovation, lda",
   "license": "ISC",
-  "publishConfig": {
-    "@UNPARALLEL:registry": "https://gitlab.com/api/v4/projects/27911275/packages/npm/"
+  "bugs": {
+    "url": "https://gitlab.com/UNPARALLEL/H2020/i3-market/connector-ri/issues"
   },
-  "dependencies": {
-    "underscore": "^1.13.1",
-    "url-search-params-polyfill": "^8.1.1"
-  }
+  "homepage": "https://gitlab.com/UNPARALLEL/H2020/i3-market/connector-ri#readme"
 }
