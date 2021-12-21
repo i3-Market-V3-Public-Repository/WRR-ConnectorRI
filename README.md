@@ -12,28 +12,16 @@ npm install connector-ri
 
 ```bash
 import Connector from 'connector-ri'
-```
 
-
-# SDK-RI
-
-```bash
-const connector = new Connector(ENDPOINT_URL, USERNAME, PASSWORD)
-# for using SDK-RI api functions, the ENDPOINT_URL must be the corresponding endpoint from each pilot, and the USERNAME and PASSWORD must be described in order to authenticate in keycloak.
-# after successfully login, the keycloak generates an access token and the connector will consume the SDK-RI api functions
-```
-
-# Semantic Engine
-
-```bash
-const connector = new Connector(ENDPOINT_URL)
-# for using Semantic Engine api functions, the ENDPOINT_URL must be the corresponding endpoint from each pilot. USERNAME and PASSWORD can't be described
+const connector = new Connector(ENDPOINT_URL) # ENDPOINT_URL is the respective pilot endpoint
 ```
 
 # Available functions
 ````bash
+getOfferingTemplate() # get template for register an offering
 getOfferings() # get list of offerings
 getProviders() # get list of providers
+getCategores() # get list of categories
 getOffering(OFFERING_ID) # get details for a specific offering
 getProviderOfferings(PROVIDER_ID) # get list of offerings from a provider
 getCategoryOfferings(CATEGORY) # get list of offering from a category
