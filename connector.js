@@ -4,16 +4,16 @@ const _ = require('underscore')
 require('url-search-params-polyfill')
 
 module.exports = class Connector {
-    constructor(endpoint) {
+    constructor(endpoint, username, password) {
         this.endpoint = endpoint
+        this.username = username
+        this.password = password
         this.accessToken = this._getAccessToken()
     }
 
     async _getAccessToken(){
 
         const url = "http://83.149.125.78:8080/auth/realms/i3market/protocol/openid-connect/token"
-        const user = "i3market"
-        const pass = "sgfjlsn44r50.,fsf03"
 
         const headers = new fetch.Headers({
             "Content-Type": "application/x-www-form-urlencoded"
@@ -24,8 +24,8 @@ module.exports = class Connector {
             "client_id": "SDK-RI_Client",
             "client_secret": "703e0db9-a646-4f1d-bdc6-2b3fe20db08a",
             "scope": "openid",
-            "username": user,
-            "password": pass
+            "username": this.username,
+            "password": this.password,
         })
 
         const options = {
@@ -196,9 +196,9 @@ module.exports = class Connector {
     }
 
     /*
-    * Get list of contracts from an offering
+    * Get list of contracts parameters from an offering
     */
-    async getOfferingContracts(offeringId, page, size){
+    async getOfferingContractParameters(offeringId, page, size){
         const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/contract-parameter/${offeringId}/offeringId`, page, size)
         if(_.isEmpty(result)){
             return []
