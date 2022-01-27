@@ -5,7 +5,7 @@ require('url-search-params-polyfill')
 const Logger = require("js-logger");
 
 module.exports = class Connector {
-    constructor(endpoint, username, password, logLevel ) {
+    constructor(endpoint, username, password, logLevel = Logger.DEBUG) {
         this.endpoint = endpoint
         this.username = username
         this.password = password
