@@ -1,4 +1,4 @@
-const fetch = require("node-fetch")
+const axios = require('axios')
 const FetchError = require('./error')
 const _ = require('underscore')
 require('url-search-params-polyfill')
@@ -11,13 +11,16 @@ module.exports = class Connector {
         this.accessToken = this._getAccessToken()
     }
 
+    /*
+    * Get an access token from keycloak
+    */
     async _getAccessToken(){
 
         const url = "http://83.149.125.78:8080/auth/realms/i3market/protocol/openid-connect/token"
 
-        const headers = new fetch.Headers({
+        const headers = {
             "Content-Type": "application/x-www-form-urlencoded"
-        })
+        }
 
         const params = new URLSearchParams({
             "grant_type": "password",
@@ -28,22 +31,18 @@ module.exports = class Connector {
             "password": this.password,
         })
 
-        const options = {
+        const config = {
             method: 'POST',
+            url: url,
             headers: headers,
-            body: params,
-            redirect: 'follow'
+            data : params
         }
 
         try{
-            const res = await fetch(url, options)
-            const jsonData = await res.json()
-            if(jsonData){
-                return jsonData.access_token
-            }
-            return null
+            const res = await axios(config)
+            return res.data.access_token
         } catch(e){
-            console.log(e)
+            console.error(e)
             throw e
         }
     }
@@ -52,44 +51,44 @@ module.exports = class Connector {
     * Generic function to fetch data
     */
     async _fetchData(method, service, page = undefined, size = undefined){
-        const headers = new fetch.Headers({
-            "Authorization": "Bearer " + await this.accessToken
-        })
 
-        const options = {
+        const url = this.endpoint + service
+
+        const headers = {
+            "Authorization": "Bearer " + await this.accessToken
+        }
+
+        const params = {
+            page: page,
+            size: size
+        }
+
+        const config = {
+            url: url,
             method: method,
             headers: headers,
-            redirect: 'follow'
+            redirect: 'follow',
+            params: params
         }
 
-        const endpointUrl = new URL(this.endpoint + service)
-        if(page){
-            endpointUrl.searchParams.append('page', page)
-        }
-        if(size){
-            endpointUrl.searchParams.append('size', size)
-        }
+        console.log("\nFetch URL: " + url)
 
-        console.log("\nFetch URL: " + endpointUrl)
-
-        try{
-            const res = await fetch(endpointUrl, options)
-
-            if(res.status === 401){
+        let res
+        try {
+            res = await axios(config)
+            const resultData = res.data
+            if(resultData.data){
+                return resultData.data
+            }
+        } catch (e){
+            if(e.response.status === 401){
                 console.log("\nToken has expired. Generate a new access token.")
                 this.accessToken = this._getAccessToken()
                 return await this._fetchData(method, service, page, size)
             }
-            else if(res.status === 200){
-                const jsonData = await res.json()
-                if(jsonData.data){
-                    return jsonData.data
-                }
+            else{
+                throw new FetchError(e)
             }
-            return null
-        } catch(e){
-            console.log(e)
-            throw e
         }
     }
 
@@ -196,52 +195,34 @@ module.exports = class Connector {
     }
 
     /*
-    * Get list of contracts parameters from an offering
-    */
-    async getOfferingContractParameters(offeringId, page, size){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/contract-parameter/${offeringId}/offeringId`, page, size)
-        if(_.isEmpty(result)){
-            return []
-        }
-        return result.map(el=>el.contractParameters)
-    }
-
-    /*
     * Register an offering
     */
     async registerOffering(data){
-        const headers = new fetch.Headers({
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + await this.accessToken
-        })
-
-        const options = {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(data),
-            redirect: 'follow'
-        };
 
         const url = this.endpoint + "/SdkRefImpl/api/sdk-ri/registration/data-offering"
+
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + await this.accessToken
+        }
+
+        const config = {
+            method: 'POST',
+            url: url,
+            headers: headers,
+            data : JSON.stringify(data)
+        }
+
         console.log("\nFetch URL: " + url)
 
-        try{
-            const res = await fetch(url, options)
-
-            if(res.status === 200){
-                const jsonData = await res.json()
-                if(jsonData.data){
-                    return jsonData.data.map(el=>el.dataOfferingId)
-                }
+        try {
+            const res = await axios(config)
+            const resultData = res.data
+            if(resultData.data){
+                return resultData.data.map(el=>el.dataOfferingId)
             }
-            else{
-                const jsonRes = await res.json()
-                throw new FetchError(jsonRes.error)
-            }
-
-        } catch(e){
-            console.log(e)
-            throw e
+        } catch (e){
+            throw new FetchError(e)
         }
     }
 
@@ -249,33 +230,25 @@ module.exports = class Connector {
     * Delete an offering
     */
     async deleteOffering(offeringId){
-        const headers = new fetch.Headers({
+        const headers = {
             "Authorization": "Bearer " + await this.accessToken
-        })
-
-        const options = {
-            method: 'DELETE',
-            headers: headers,
-            redirect: 'follow'
-        };
+        }
 
         const url = this.endpoint + `/SdkRefImpl/api/sdk-ri/delete-offering/${offeringId}`
+
+        const config = {
+            method: 'DELETE',
+            headers: headers,
+            url: url
+        }
+
         console.log("\nFetch URL: " + url)
 
-        try{
-            const res = await fetch(url, options)
-
-            if(res.status === 200){
-                console.log(`\nData Offering ${offeringId} deleted.`)
-            }
-            else{
-                const jsonRes = await res.json()
-                throw new FetchError(jsonRes.error)
-            }
-
-        } catch(e){
-            console.log(e)
-            throw e
+        try {
+            const res = await axios(config)
+            return res.data
+        } catch (e){
+            throw new FetchError(e)
         }
     }
 }
