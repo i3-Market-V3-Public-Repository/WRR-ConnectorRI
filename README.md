@@ -13,10 +13,11 @@ npm install @i3m/connector-ri
 ```bash
 import Connector from '@i3m/connector-ri'
 
-const connector = new Connector(ENDPOINT_URL, USERNAME, PASSWORD) 
+const connector = new Connector(ENDPOINT_URL, USERNAME, PASSWORD, LOG_LEVEL) 
 # ENDPOINT_URL: pilot endpoint
 # USERNAME: i3-MARKET login username
 # PASSWORD: i3-MARKET login password
+# LOG_LEVEL: logs level (more info: https://github.com/jonnyreeves/js-logger) 
 ```
 
 ### Available functions
