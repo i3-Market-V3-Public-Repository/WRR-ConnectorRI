@@ -2,15 +2,17 @@ const axios = require('axios')
 const FetchError = require('./error')
 const _ = require('underscore')
 require('url-search-params-polyfill')
+const Logger = require("js-logger");
 
 module.exports = class Connector {
-    constructor(endpoint, username, password) {
+    constructor(endpoint, username, password, logLevel ) {
         this.endpoint = endpoint
         this.username = username
         this.password = password
         this.accessToken = this._getAccessToken()
+        Logger.useDefaults()
+        Logger.setLevel(logLevel)
     }
-
     /*
     * Get an access token from keycloak
     */
@@ -42,8 +44,8 @@ module.exports = class Connector {
             const res = await axios(config)
             return res.data.access_token
         } catch(e){
-            console.error(e)
-            throw e
+            Logger.error(e)
+            throw new FetchError(e)
         }
     }
 
@@ -71,7 +73,7 @@ module.exports = class Connector {
             params: params
         }
 
-        console.log("\nFetch URL: " + url)
+        Logger.debug("\nFetch URL: " + url)
 
         let res
         try {
@@ -82,7 +84,7 @@ module.exports = class Connector {
             }
         } catch (e){
             if(e.response.status === 401){
-                console.log("\nToken has expired. Generate a new access token.")
+                Logger.warn("\nToken has expired. Generate a new access token.")
                 this.accessToken = this._getAccessToken()
                 return await this._fetchData(method, service, page, size)
             }
@@ -213,7 +215,7 @@ module.exports = class Connector {
             data : JSON.stringify(data)
         }
 
-        console.log("\nFetch URL: " + url)
+        Logger.debug("\nFetch URL: " + url)
 
         try {
             const res = await axios(config)
@@ -242,7 +244,7 @@ module.exports = class Connector {
             url: url
         }
 
-        console.log("\nFetch URL: " + url)
+        Logger.debug("\nFetch URL: " + url)
 
         try {
             const res = await axios(config)
