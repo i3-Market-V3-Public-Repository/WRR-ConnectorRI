@@ -45,6 +45,8 @@ const offerings = await connector.getProviderOfferings(PROVIDER_ID)
 ## Credits
 This repository has been created by:
 
+Márcio Mateus [marcio.mateus@unparallel.pt](mailto:marcio.mateus@unparallel.pt)
+
 Pedro Ferreira [pedro.ferreira@unparallel.pt](mailto:marcio.mateus@unparallel.pt)
 
 ## License
