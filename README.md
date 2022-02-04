@@ -5,7 +5,7 @@ This connector implements the logic needed to connect the SDK-RI and SDK-Core, p
 ## Installation
 
 ```bash
-npm install @i3m/connector-ri
+npm install @unparallel/connector-ri
 ```
 
 ## How to use
