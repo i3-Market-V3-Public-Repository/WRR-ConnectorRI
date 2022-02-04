@@ -1,7 +1,7 @@
 {
-  "name": "@i3m/connector-ri",
-  "version": "1.0.3",
-  "description": "This connector implements the logic needed to connect the SDK-RI and SDK-Core, providing an abstraction used by the Web-RI.",
+  "name": "@unparallel/connector-ri",
+  "version": "1.0.0",
+  "description": "This connector implements the logic needed to connect the SDK-RI, providing an abstraction used by the Web-RI.",
   "main": "connector.js",
   "dependencies": {
     "axios": "^0.23.0",
@@ -9,11 +9,15 @@
     "underscore": "^1.13.1",
     "url-search-params-polyfill": "^8.1.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "UNPARALLEL Innovation, lda",
   "license": "MIT",
-  "homepage": "https://gitlab.com/i3-market/code/web-ri/connector-ri#readme"
+  "homepage": "https://github.com/unparallel-innovation/i3-MARKET-Connector-RI",
+  "bugs": {
+    "url": "https://github.com/unparallel-innovation/i3-MARKET-Connector-RI/issues"
+  },
+  "keywords": [
+    "i3-Market",
+    "web-ri",
+    "connector"
+  ]
 }
