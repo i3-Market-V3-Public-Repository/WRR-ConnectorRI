@@ -11,7 +11,7 @@ npm install @unparallel/connector-ri
 ## How to use
 
 ```bash
-import Connector from '@i3m/connector-ri'
+import Connector from '@unparallel/connector-ri'
 
 const connector = new Connector(ENDPOINT_URL, USERNAME, PASSWORD, LOG_LEVEL) 
 # ENDPOINT_URL: pilot endpoint
