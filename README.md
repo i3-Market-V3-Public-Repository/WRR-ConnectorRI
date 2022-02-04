@@ -26,7 +26,7 @@ getOfferingTemplate() # get template for register an offering
 getOfferings() # get list of offerings
 getProviders() # get list of providers
 getCategories() # get list of categories
-getOffering(OFFERING_ID) # get details for a specific offering
+getOffering( OFFERING_ID ) # get details for a specific offering
 getProviderOfferings(PROVIDER_ID) # get list of offerings from a provider
 getCategoryOfferings(CATEGORY) # get list of offering from a category
 getOfferingsByCategory() # get list of offerings by categories
