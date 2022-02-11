@@ -88,6 +88,15 @@ module.exports = class Connector {
                 this.accessToken = this._getAccessToken()
                 return await this._fetchData(method, service, page, size)
             }
+            else if(e.response.status === 404){
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    statusDescription: e.response.data.statusDescription,
+                    errorMessage: JSON.parse(e.response.data.errorMessage).error
+                }
+                Logger.error(error.errorMessage.responseBody.message)
+                return []
+            }
             else{
                 throw new FetchError(e)
             }
