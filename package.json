@@ -4,8 +4,12 @@
   "description": "This connector implements the logic needed to connect the SDK-RI, providing an abstraction used by the Web-RI.",
   "main": "connector.js",
   "dependencies": {
+    "@stdlib/string-percent-encode": "0.0.7",
     "axios": "^0.23.0",
+    "base64url": "^3.0.1",
+    "encodeurl": "^1.0.2",
     "js-logger": "^1.6.1",
+    "random-unique-id": "^2.0.0",
     "underscore": "^1.13.1",
     "url-search-params-polyfill": "^8.1.1"
   },

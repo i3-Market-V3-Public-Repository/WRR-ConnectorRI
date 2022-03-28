@@ -1,8 +1,9 @@
 const axios = require('axios')
 const FetchError = require('./error')
 const _ = require('underscore')
-require('url-search-params-polyfill')
 const Logger = require("js-logger");
+require('url-search-params-polyfill')
+const percentEncode = require( '@stdlib/string-percent-encode' );
 
 module.exports = class Connector {
     constructor(endpoint, username, password, logLevel = Logger.OFF) {
@@ -261,5 +262,63 @@ module.exports = class Connector {
         } catch (e){
             throw new FetchError(e)
         }
+    }
+
+    async getTokenForRegisterClient(){
+
+        const base64Credentials = Buffer.from("test@i3-market.eu:i3market").toString('base64');
+
+        const config = {
+            method: 'get',
+            url: 'https://identity1.i3-market.eu/release2/developers/login',
+            headers: {
+                'Authorization': `Basic ${base64Credentials}`
+            }
+        };
+
+        Logger.debug("\nFetch URL: " + config.url)
+
+        try {
+            const res = await axios(config)
+            return res.data.initialAccessToken
+        } catch (e){
+            throw new FetchError(e)
+        }
+    }
+
+    async registerNewClient(clientName, redirectUrl, token){
+        const client = {
+            "grant_types": [ "authorization_code" ],
+            "token_endpoint_auth_method": "none",
+            "redirect_uris": [ redirectUrl ],
+            "client_name": clientName,
+            "id_token_signed_response_alg": "EdDSA"
+        }
+
+        const config = {
+            method: 'post',
+            url: 'https://identity1.i3-market.eu/release2/oidc/reg',
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            data : JSON.stringify(client)
+        };
+
+        Logger.debug("\nFetch URL: " + config.url)
+
+        try {
+            const res = await axios(config)
+            return res.data
+        } catch (e){
+            throw new FetchError(e)
+        }
+    }
+
+     getIssueCredentialUrl(credential, callbackUrl){
+        const encodedCredential = percentEncode(JSON.stringify(credential))
+        const encodedCallbackUrl = percentEncode(callbackUrl)
+        return `https://identity1.i3-market.eu/release2/vc/credential/issue/${encodedCredential}/callbackUrl/${encodedCallbackUrl}`;
     }
 }
