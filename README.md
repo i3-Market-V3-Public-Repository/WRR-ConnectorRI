@@ -13,32 +13,30 @@ npm install @unparallel/connector-ri
 ```bash
 import Connector from '@unparallel/connector-ri'
 
-const connector = new Connector(SDK_RI_ENDPOINT, ACCESS_TOKEN, ID_TOKEN, LOG_LEVEL) 
+const connector = new Connector(SDK_RI_ENDPOINT, LOG_LEVEL) 
 # SDK_RI_ENDPOINT: pilot endpoint
-# ACCESS_TOKEN: authentication access token
-# ID_TOKEN: authentication id token
 # I3MARKET_PASSWORD: logs level (more info: https://github.com/jonnyreeves/js-logger) 
 ```
 
 ### Available functions
 ````bash
-getOfferingTemplate() # get template for register an offering
-getOfferings() # get list of offerings
-getProviders() # get list of providers
-getCategories() # get list of categories
-getOffering(OFFERING_ID) # get details for a specific offering
-getProviderOfferings(PROVIDER_ID) # get list of offerings from a provider
-getCategoryOfferings(CATEGORY) # get list of offering from a category
-getOfferingsByCategory() # get list of offerings by categories
-getOfferingContractParameters(OFFERING_ID) # get list of contract parameters from a specific category
-registerOffering(DATA) # register a new offering
-deleteOffering(OFFERING_ID) # delete an offering
+getOfferingTemplate(accessToken, idToken) # get template for register an offering
+getOfferings(accessToken, idToken) # get list of offerings
+getProviders(accessToken, idToken) # get list of providers
+getCategories(accessToken, idToken) # get list of categories
+getOffering(accessToken, idToken, OFFERING_ID) # get details for a specific offering
+getProviderOfferings(accessToken, idToken, PROVIDER_ID) # get list of offerings from a provider
+getCategoryOfferings(accessToken, idToken, CATEGORY) # get list of offering from a category
+getOfferingsByCategory(accessToken, idToken) # get list of offerings by categories
+getOfferingContractParameters(accessToken, idToken, OFFERING_ID) # get list of contract parameters from a specific category
+registerOffering(accessToken, idToken, DATA) # register a new offering
+deleteOffering(accessToken, idToken, OFFERING_ID) # delete an offering
 ````
 
 ### Example
 
 ````bash
-const offerings = await connector.getProviderOfferings(PROVIDER_ID)
+const offerings = await connector.getProviderOfferings(accessToken, idToken, PROVIDER_ID)
 ````
 
 
