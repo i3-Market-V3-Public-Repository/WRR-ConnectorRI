@@ -6,59 +6,24 @@ require('url-search-params-polyfill')
 const percentEncode = require( '@stdlib/string-percent-encode' );
 
 module.exports = class Connector {
-    constructor(endpoint, username, password, logLevel = Logger.OFF) {
+    constructor(endpoint, accessToken, idToken, logLevel = Logger.OFF) {
         this.endpoint = endpoint
-        this.username = username
-        this.password = password
-        this.accessToken = this._getAccessToken()
+        this.accessToken = accessToken;
+        this.idToken = idToken;
         Logger.useDefaults()
         Logger.setLevel(logLevel)
-    }
-    /*
-    * Get an access token from keycloak
-    */
-    async _getAccessToken(){
-
-        const url = "http://83.149.125.78:8080/auth/realms/i3market/protocol/openid-connect/token"
-
-        const headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-
-        const params = new URLSearchParams({
-            "grant_type": "password",
-            "client_id": "SDK-RI_Client",
-            "client_secret": "703e0db9-a646-4f1d-bdc6-2b3fe20db08a",
-            "scope": "openid",
-            "username": this.username,
-            "password": this.password,
-        })
-
-        const config = {
-            method: 'POST',
-            url: url,
-            headers: headers,
-            data : params
-        }
-
-        try{
-            const res = await axios(config)
-            return res.data.access_token
-        } catch(e){
-            Logger.error(e)
-            throw new FetchError(e)
-        }
     }
 
     /*
     * Generic function to fetch data
     */
     async _fetchData(method, service, page = undefined, size = undefined){
-
         const url = this.endpoint + service
 
         const headers = {
-            "Authorization": "Bearer " + await this.accessToken
+            'accept': 'application/json',
+            'access_token': this.accessToken,
+            'id_token': this.idToken
         }
 
         const params = {
@@ -84,23 +49,7 @@ module.exports = class Connector {
                 return resultData.data
             }
         } catch (e){
-            if(e.response.status === 401){
-                Logger.warn("\nToken has expired. Generate a new access token.")
-                this.accessToken = this._getAccessToken()
-                return await this._fetchData(method, service, page, size)
-            }
-            else if(e.response.status === 404){
-                const error = {
-                    statusCode: e.response.data.statusCode,
-                    statusDescription: e.response.data.statusDescription,
-                    errorMessage: JSON.parse(e.response.data.errorMessage).error
-                }
-                Logger.error(error.errorMessage.responseBody.message)
-                return []
-            }
-            else{
-                throw new FetchError(e)
-            }
+            throw new FetchError(e)
         }
     }
 
@@ -209,13 +158,15 @@ module.exports = class Connector {
     /*
     * Register an offering
     */
-    async registerOffering(data){
 
+    async registerOffering(data){
         const url = this.endpoint + "/SdkRefImpl/api/sdk-ri/registration/data-offering"
 
         const headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + await this.accessToken
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'access_token': this.accessToken,
+            'id_token': this.idToken
         }
 
         const config = {
@@ -231,7 +182,7 @@ module.exports = class Connector {
             const res = await axios(config)
             const resultData = res.data
             if(resultData.data){
-                return resultData.data.map(el=>el.dataOfferingId)
+                return resultData.data.dataOfferingId
             }
         } catch (e){
             throw new FetchError(e)
@@ -242,11 +193,13 @@ module.exports = class Connector {
     * Delete an offering
     */
     async deleteOffering(offeringId){
-        const headers = {
-            "Authorization": "Bearer " + await this.accessToken
-        }
-
         const url = this.endpoint + `/SdkRefImpl/api/sdk-ri/delete-offering/${offeringId}`
+
+        const headers = {
+            'accept': 'application/json',
+            'access_token': this.accessToken,
+            'id_token': this.idToken
+        }
 
         const config = {
             method: 'DELETE',
@@ -265,7 +218,6 @@ module.exports = class Connector {
     }
 
     async getTokenForRegisterClient(){
-
         const base64Credentials = Buffer.from("test@i3-market.eu:i3market").toString('base64');
 
         const config = {

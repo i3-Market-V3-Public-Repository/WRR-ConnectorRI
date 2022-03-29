@@ -13,10 +13,10 @@ npm install @unparallel/connector-ri
 ```bash
 import Connector from '@unparallel/connector-ri'
 
-const connector = new Connector(SDK_RI_ENDPOINT, I3MARKET_USERNAME, I3MARKET_PASSWORD, LOG_LEVEL) 
+const connector = new Connector(SDK_RI_ENDPOINT, ACCESS_TOKEN, ID_TOKEN, LOG_LEVEL) 
 # SDK_RI_ENDPOINT: pilot endpoint
-# I3MARKET_USERNAME: i3-MARKET login username
-# PASSWORD: i3-MARKET login password
+# ACCESS_TOKEN: authentication access token
+# ID_TOKEN: authentication id token
 # I3MARKET_PASSWORD: logs level (more info: https://github.com/jonnyreeves/js-logger) 
 ```
 
