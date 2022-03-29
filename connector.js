@@ -6,10 +6,8 @@ require('url-search-params-polyfill')
 const percentEncode = require( '@stdlib/string-percent-encode' );
 
 module.exports = class Connector {
-    constructor(endpoint, accessToken, idToken, logLevel = Logger.OFF) {
+    constructor(endpoint, logLevel = Logger.OFF) {
         this.endpoint = endpoint
-        this.accessToken = accessToken;
-        this.idToken = idToken;
         Logger.useDefaults()
         Logger.setLevel(logLevel)
     }
@@ -17,13 +15,13 @@ module.exports = class Connector {
     /*
     * Generic function to fetch data
     */
-    async _fetchData(method, service, page = undefined, size = undefined){
+    async _fetchData(accessToken, idToken, method, service, page = undefined, size = undefined){
         const url = this.endpoint + service
 
         const headers = {
             'accept': 'application/json',
-            'access_token': this.accessToken,
-            'id_token': this.idToken
+            'access_token': accessToken,
+            'id_token': idToken
         }
 
         const params = {
@@ -49,15 +47,27 @@ module.exports = class Connector {
                 return resultData.data
             }
         } catch (e){
-            throw new FetchError(e)
+            if(e.response.status === 404){
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    statusDescription: e.response.data.statusDescription,
+                    errorMessage: JSON.parse(e.response.data.errorMessage).error
+                }
+                Logger.error(error.errorMessage.responseBody.message)
+                return []
+            }
+            else{
+                throw new FetchError(e)
+            }
+
         }
     }
 
     /*
     * Get offering template
     */
-    async getOfferingTemplate(){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/template`)
+    async getOfferingTemplate(accessToken, idToken){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/template`)
         if(_.isEmpty(result)){
             return []
         }
@@ -67,8 +77,8 @@ module.exports = class Connector {
     /*
     * Get list of categories
     */
-    async getCategories(page, size){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/registration/categories-list`, page, size)
+    async getCategories(accessToken, idToken, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/registration/categories-list`, page, size)
         if(_.isEmpty(result)){
             return []
         }
@@ -78,8 +88,8 @@ module.exports = class Connector {
     /*
     * Get list of providers
     */
-    async getProviders(page, size){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/providers-list`, page, size)
+    async getProviders(accessToken, idToken, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/providers-list`, page, size)
         if(_.isEmpty(result)){
             return []
         }
@@ -89,8 +99,8 @@ module.exports = class Connector {
     /*
     * Get list of offerings
     */
-    async getOfferings(page, size){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/offerings-list`, page, size)
+    async getOfferings(accessToken, idToken, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/offerings-list`, page, size)
         if(_.isEmpty(result)){
             return []
         }
@@ -100,8 +110,8 @@ module.exports = class Connector {
     /*
     * Get offering details
     */
-    async getOffering(offeringId, page, size){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/${offeringId}/offeringId`, page, size)
+    async getOffering(accessToken, idToken, offeringId, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/${offeringId}/offeringId`, page, size)
         if(_.isEmpty(result)){
             return []
         }
@@ -111,8 +121,8 @@ module.exports = class Connector {
     /*
     * Get list of offerings from a provider
     */
-    async getProviderOfferings(providerId, page, size){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/${providerId}/providerId`, page, size)
+    async getProviderOfferings(accessToken, idToken, providerId, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/${providerId}/providerId`, page, size)
         if(_.isEmpty(result)){
             return []
         }
@@ -122,8 +132,8 @@ module.exports = class Connector {
     /*
     * Get list of offerings from a category
     */
-    async getCategoryOfferings(category, page, size){
-        const result = await this._fetchData("GET", `/SdkRefImpl/api/sdk-ri/offering/${category}`, page, size)
+    async getCategoryOfferings(accessToken, idToken, category, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/${category}`, page, size)
         if(_.isEmpty(result)){
             return []
         }
@@ -133,14 +143,14 @@ module.exports = class Connector {
     /*
     * Get list of offerings by category
     */
-    async getOfferingsByCategory(){
-        const categories = await this.getCategories()
+    async getOfferingsByCategory(accessToken, idToken){
+        const categories = await this.getCategories(accessToken, idToken)
 
         if(categories){
             let result = []
             for(let i = 0; i < categories.length; i++){
                 const category = categories[i].name
-                const offerings = await this.getCategoryOfferings(category)
+                const offerings = await this.getCategoryOfferings(accessToken, idToken, category)
                 if(offerings){
                     const offeringsCount = (offerings.length > 0 ? offerings.length : 0)
                     const res = {
@@ -159,14 +169,14 @@ module.exports = class Connector {
     * Register an offering
     */
 
-    async registerOffering(data){
+    async registerOffering(accessToken, idToken, data){
         const url = this.endpoint + "/SdkRefImpl/api/sdk-ri/registration/data-offering"
 
         const headers = {
             'accept': 'application/json',
             'Content-Type': 'application/json',
-            'access_token': this.accessToken,
-            'id_token': this.idToken
+            'access_token': accessToken,
+            'id_token': idToken
         }
 
         const config = {
@@ -192,13 +202,13 @@ module.exports = class Connector {
     /*
     * Delete an offering
     */
-    async deleteOffering(offeringId){
+    async deleteOffering(accessToken, idToken, offeringId){
         const url = this.endpoint + `/SdkRefImpl/api/sdk-ri/delete-offering/${offeringId}`
 
         const headers = {
             'accept': 'application/json',
-            'access_token': this.accessToken,
-            'id_token': this.idToken
+            'access_token': accessToken,
+            'id_token': idToken
         }
 
         const config = {
