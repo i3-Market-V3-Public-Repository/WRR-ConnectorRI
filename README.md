@@ -4,40 +4,40 @@ This connector implements the logic needed to connect the SDK-RI and SDK-Core, p
 
 ## Installation
 
-```bash
+```javascript
 npm install @unparallel/connector-ri
 ```
 
 ## How to use
 
-```bash
+```javascript
 import Connector from '@unparallel/connector-ri'
 
-const connector = new Connector(SDK_RI_ENDPOINT, LOG_LEVEL) 
-# SDK_RI_ENDPOINT: pilot endpoint
-# I3MARKET_PASSWORD: logs level (more info: https://github.com/jonnyreeves/js-logger) 
+const connector = new Connector(SDK_RI_ENDPOINT, LOG_LEVEL)
+// SDK_RI_ENDPOINT: pilot endpoint
+// I3MARKET_PASSWORD: logs level (more info: https://github.com/jonnyreeves/js-logger) 
 ```
 
 ### Available functions
-````bash
-getOfferingTemplate(accessToken, idToken) # get template for register an offering
-getOfferings(accessToken, idToken) # get list of offerings
-getProviders(accessToken, idToken) # get list of providers
-getCategories(accessToken, idToken) # get list of categories
-getOffering(accessToken, idToken, OFFERING_ID) # get details for a specific offering
-getProviderOfferings(accessToken, idToken, PROVIDER_ID) # get list of offerings from a provider
-getCategoryOfferings(accessToken, idToken, CATEGORY) # get list of offering from a category
-getOfferingsByCategory(accessToken, idToken) # get list of offerings by categories
-getOfferingContractParameters(accessToken, idToken, OFFERING_ID) # get list of contract parameters from a specific category
-registerOffering(accessToken, idToken, DATA) # register a new offering
-deleteOffering(accessToken, idToken, OFFERING_ID) # delete an offering
-````
+```javascript
+getOfferingTemplate(accessToken, idToken) // get template for register an offering
+getOfferings(accessToken, idToken) // get list of offerings
+getProviders(accessToken, idToken) // get list of providers
+getCategories(accessToken, idToken) // get list of categories
+getOffering(accessToken, idToken, OFFERING_ID) // get details for a specific offering
+getProviderOfferings(accessToken, idToken, PROVIDER_ID) // get list of offerings from a provider
+getCategoryOfferings(accessToken, idToken, CATEGORY) // get list of offering from a category
+getOfferingsByCategory(accessToken, idToken) // get list of offerings by categories
+getOfferingContractParameters(accessToken, idToken, OFFERING_ID) // get list of contract parameters from a specific category
+registerOffering(accessToken, idToken, DATA) // register a new offering
+deleteOffering(accessToken, idToken, OFFERING_ID) // delete an offering
+```
 
 ### Example
 
-````bash
+```javascript
 const offerings = await connector.getProviderOfferings(accessToken, idToken, PROVIDER_ID)
-````
+```
 
 
 ## Credits

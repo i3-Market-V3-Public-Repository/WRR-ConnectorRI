@@ -143,14 +143,14 @@ module.exports = class Connector {
     /*
     * Get list of offerings by category
     */
-    async getOfferingsByCategory(accessToken, idToken){
-        const categories = await this.getCategories(accessToken, idToken)
+    async getOfferingsByCategory(accessToken, idToken, page, size){
+        const categories = await this.getCategories(accessToken, idToken, page, size)
 
         if(categories){
             let result = []
             for(let i = 0; i < categories.length; i++){
                 const category = categories[i].name
-                const offerings = await this.getCategoryOfferings(accessToken, idToken, category)
+                const offerings = await this.getCategoryOfferings(accessToken, idToken, category, page, size)
                 if(offerings){
                     const offeringsCount = (offerings.length > 0 ? offerings.length : 0)
                     const res = {
