@@ -1,6 +1,6 @@
 {
   "name": "@unparallel/connector-ri",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "This connector implements the logic needed to connect the SDK-RI, providing an abstraction used by the Web-RI.",
   "main": "connector.js",
   "dependencies": {
@@ -21,7 +21,7 @@
   },
   "keywords": [
     "i3-Market",
-    "web-ri",
-    "connector"
+    "Web-RI",
+    "Connector-RI"
   ]
 }

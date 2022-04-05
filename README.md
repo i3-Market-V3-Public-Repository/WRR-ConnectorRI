@@ -1,6 +1,6 @@
 # Connector-RI
 
-This connector implements the logic needed to connect the SDK-RI and SDK-Core, providing an abstraction used by the Web-RI
+This connector implements the logic needed to connect the SDK-RI, providing an abstraction used by the Web-RI.
 
 ## Installation
 
@@ -15,7 +15,7 @@ import Connector from '@unparallel/connector-ri'
 
 const connector = new Connector(SDK_RI_ENDPOINT, LOG_LEVEL)
 // SDK_RI_ENDPOINT: pilot endpoint
-// I3MARKET_PASSWORD: logs level (more info: https://github.com/jonnyreeves/js-logger) 
+// LOG_LEVEL (optional): logs level (more info: https://github.com/jonnyreeves/js-logger)
 ```
 
 ### Available functions
