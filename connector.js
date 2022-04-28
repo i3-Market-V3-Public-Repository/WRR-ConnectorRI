@@ -5,7 +5,7 @@ const Logger = require("js-logger");
 require('url-search-params-polyfill')
 const percentEncode = require( '@stdlib/string-percent-encode' );
 
-module.exports = class Connector {
+class Connector {
     constructor(endpoint, logLevel = Logger.OFF) {
         this.endpoint = endpoint
         Logger.useDefaults()
@@ -227,12 +227,12 @@ module.exports = class Connector {
         }
     }
 
-    async getTokenForRegisterClient(){
+    async _getTokenForRegisterClient(oidc_url){
         const base64Credentials = Buffer.from("test@i3-market.eu:i3market").toString('base64');
 
         const config = {
             method: 'get',
-            url: 'https://identity1.i3-market.eu/release2/developers/login',
+            url: `${oidc_url}/release2/developers/login`,
             headers: {
                 'Authorization': `Basic ${base64Credentials}`
             }
@@ -248,10 +248,11 @@ module.exports = class Connector {
         }
     }
 
-    async registerNewClient(clientName, redirectUrl, token){
+    async registerNewClient(oidc_url, clientName, redirectUrl){
+        const token = await this._getTokenForRegisterClient(oidc_url)
         const client = {
             "grant_types": [ "authorization_code" ],
-            "token_endpoint_auth_method": "none",
+            "token_endpoint_auth_method": "client_secret_jwt",
             "redirect_uris": [ redirectUrl ],
             "client_name": clientName,
             "id_token_signed_response_alg": "EdDSA"
@@ -259,7 +260,7 @@ module.exports = class Connector {
 
         const config = {
             method: 'post',
-            url: 'https://identity1.i3-market.eu/release2/oidc/reg',
+            url: `${oidc_url}/release2/oidc/reg`,
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -278,9 +279,11 @@ module.exports = class Connector {
         }
     }
 
-     getIssueCredentialUrl(credential, callbackUrl){
+     getIssueCredentialUrl(oidc_url, credential, callbackUrl){
         const encodedCredential = percentEncode(JSON.stringify(credential))
         const encodedCallbackUrl = percentEncode(callbackUrl)
-        return `https://identity1.i3-market.eu/release2/vc/credential/issue/${encodedCredential}/callbackUrl/${encodedCallbackUrl}`;
+        return `${oidc_url}/release2/vc/credential/issue/${encodedCredential}/callbackUrl/${encodedCallbackUrl}`;
     }
 }
+
+exports.Connector = Connector
