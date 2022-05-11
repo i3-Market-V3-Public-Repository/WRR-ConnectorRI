@@ -260,7 +260,7 @@ class Connector {
 
         const config = {
             method: 'post',
-            url: `${oidc_url}/release2/oidc/reg`,
+            url: `${oidc_url}/oidc/reg`,
             headers: {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -279,10 +279,10 @@ class Connector {
         }
     }
 
-     getIssueCredentialUrl(oidc_url, credential, callbackUrl){
+     getIssueCredentialUrl(vc_url, credential, callbackUrl){
         const encodedCredential = percentEncode(JSON.stringify(credential))
         const encodedCallbackUrl = percentEncode(callbackUrl)
-        return `${oidc_url}/release2/vc/credential/issue/${encodedCredential}/callbackUrl/${encodedCallbackUrl}`;
+        return `${vc_url}/credential/issue/${encodedCredential}/callbackUrl/${encodedCallbackUrl}`;
     }
 }
 
