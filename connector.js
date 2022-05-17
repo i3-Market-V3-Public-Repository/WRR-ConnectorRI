@@ -227,12 +227,45 @@ class Connector {
         }
     }
 
+    /*
+    * Update an offering
+    */
+    async updateOffering(accessToken, idToken, data){
+        const url = this.endpoint + "/SdkRefImpl/api/sdk-ri/update-offering"
+
+        const headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'access_token': accessToken,
+            'id_token': idToken
+        }
+
+        const config = {
+            method: 'PATCH',
+            url: url,
+            headers: headers,
+            data : JSON.stringify(data)
+        }
+
+        Logger.debug("\nFetch URL: " + url)
+
+        try {
+            const res = await axios(config)
+            return res.data
+        } catch (e){
+            throw new FetchError(e)
+        }
+    }
+
+    /*
+    * Get a token to register a new OIDC Client
+    */
     async _getTokenForRegisterClient(oidc_url){
         const base64Credentials = Buffer.from("test@i3-market.eu:i3market").toString('base64');
 
         const config = {
             method: 'get',
-            url: `${oidc_url}/release2/developers/login`,
+            url: `${oidc_url}/developers/login`,
             headers: {
                 'Authorization': `Basic ${base64Credentials}`
             }
@@ -248,12 +281,16 @@ class Connector {
         }
     }
 
-    async registerNewClient(oidc_url, clientName, redirectUrl){
+    /*
+    * Register a new OIDC Client
+    */
+    async registerNewClient(oidc_url, clientName, redirectUrl, logoutRedirectUrl){
         const token = await this._getTokenForRegisterClient(oidc_url)
         const client = {
             "grant_types": [ "authorization_code" ],
             "token_endpoint_auth_method": "client_secret_jwt",
             "redirect_uris": [ redirectUrl ],
+            "post_logout_redirect_uris": [ logoutRedirectUrl ],
             "client_name": clientName,
             "id_token_signed_response_alg": "EdDSA"
         }
@@ -279,6 +316,9 @@ class Connector {
         }
     }
 
+    /*
+    * Issue a new verifiable credential
+    */
      getIssueCredentialUrl(vc_url, credential, callbackUrl){
         const encodedCredential = percentEncode(JSON.stringify(credential))
         const encodedCallbackUrl = percentEncode(callbackUrl)

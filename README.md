@@ -31,6 +31,7 @@ getOfferingsByCategory(accessToken, idToken) // get list of offerings by categor
 getOfferingContractParameters(accessToken, idToken, OFFERING_ID) // get list of contract parameters from a specific category
 registerOffering(accessToken, idToken, DATA) // register a new offering
 deleteOffering(accessToken, idToken, OFFERING_ID) // delete an offering
+updateOffering(accessToken, idToken, DATA) // update an offering
 ```
 
 ### Example
