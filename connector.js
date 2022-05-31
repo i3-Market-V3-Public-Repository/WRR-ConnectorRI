@@ -13,6 +13,12 @@ class Connector {
     }
 
     /*
+    *
+    * OFFERINGS MANAGEMENT
+    *
+    */
+
+    /*
     * Generic function to fetch data
     */
     async _fetchData(accessToken, idToken, method, service, page = undefined, size = undefined){
@@ -47,19 +53,18 @@ class Connector {
                 return resultData.data
             }
         } catch (e){
-            if(e.response.status === 404){
-                const error = {
-                    statusCode: e.response.data.statusCode,
-                    statusDescription: e.response.data.statusDescription,
-                    errorMessage: JSON.parse(e.response.data.errorMessage).error
-                }
-                Logger.error(error.errorMessage.responseBody.message)
+            if(e.response.status === 404) {
+                Logger.error(e.response.data.statusDescription)
                 return []
             }
-            else{
-                throw new FetchError(e)
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
             }
-
+            throw new FetchError(e)
         }
     }
 
@@ -195,6 +200,13 @@ class Connector {
                 return resultData.data.dataOfferingId
             }
         } catch (e){
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
+            }
             throw new FetchError(e)
         }
     }
@@ -223,6 +235,13 @@ class Connector {
             const res = await axios(config)
             return res.data
         } catch (e){
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
+            }
             throw new FetchError(e)
         }
     }
@@ -253,9 +272,22 @@ class Connector {
             const res = await axios(config)
             return res.data
         } catch (e){
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
+            }
             throw new FetchError(e)
         }
     }
+
+    /*
+    *
+    * OIDC / VC
+    *
+    */
 
     /*
     * Get a token to register a new OIDC Client
@@ -319,19 +351,17 @@ class Connector {
     /*
     * Issue a new verifiable credential
     */
-     getIssueCredentialUrl(vc_url, credential, callbackUrl){
+    getIssueCredentialUrl(vc_url, credential, callbackUrl){
         const encodedCredential = percentEncode(JSON.stringify(credential))
         const encodedCallbackUrl = percentEncode(callbackUrl)
         return `${vc_url}/credential/issue/${encodedCredential}/callbackUrl/${encodedCallbackUrl}`;
     }
 
-    // create notification
-    // create subscription for notification
-    // mark notification as read
-    // mark notification as unread
-    // delete subscription
-    // delete notification
-    // get list notifications
+    /*
+    *
+    * NOTIFICATIONS
+    *
+    */
 
     /*
     * Generic function to fetch notification data
@@ -362,22 +392,22 @@ class Connector {
             }
         } catch (e){
             if(e.response.status === 404) {
-                const error = {
-                    statusCode: e.response.data.statusCode,
-                    statusDescription: e.response.data.statusDescription,
-                    errorMessage: JSON.parse(e.response.data.errorMessage).error
-                }
-                Logger.error(error.errorMessage.responseBody.message)
+                Logger.error(e.response.data.statusDescription)
                 return []
             }
-            else {
-                throw new FetchError(e)
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
             }
+            throw new FetchError(e)
         }
     }
 
     async getAllNotifications(accessToken, idToken){
-         return await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification`);
+        return await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification`);
     }
 
     async getUserNotifications(accessToken, idToken, user){
@@ -389,7 +419,7 @@ class Connector {
     }
 
     async markNotificationsAsRead(accessToken, idToken, notificationId){
-         return await this._fetchNotification(accessToken, idToken, "PATCH", `/SdkRefImpl/api/sdk-ri/notification/${notificationId}/read`);
+        return await this._fetchNotification(accessToken, idToken, "PATCH", `/SdkRefImpl/api/sdk-ri/notification/${notificationId}/read`);
     }
 
     async markNotificationsAsUnread(accessToken, idToken, notificationId){
@@ -439,6 +469,89 @@ class Connector {
                 return resultData.data
             }
         } catch (e){
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
+            }
+            throw new FetchError(e)
+        }
+    }
+
+    /*
+    *
+    * CONTRACTS
+    *
+    */
+    async getContractTemplate(accessToken, idToken, offeringId){
+        const url = `${this.endpoint}/SdkRefImpl/api/sdk-ri/contract/get-contract-template/${offeringId}`;
+
+        const headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'access_token': accessToken,
+            'id_token': idToken
+        };
+
+        const config = {
+            method: 'GET',
+            url: url,
+            headers: headers
+        };
+
+        Logger.debug("\nFetch URL: " + url);
+
+        try {
+            const res = await axios(config)
+            return res.data;
+        } catch (e){
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
+            }
+            throw new FetchError(e)
+        }
+    }
+
+    async createDataPurchase(accessToken, idToken, authorization, originMarketId, data){
+        const url = `${this.endpoint}/SdkRefImpl/api/sdk-ri/contract/create-data-purchase?origin_market_id=${originMarketId}`;
+
+        const headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'access_token': accessToken,
+            'id_token': idToken,
+            'Authorization': authorization
+        }
+
+        const config = {
+            method: 'post',
+            url: url,
+            headers: headers,
+            data : JSON.stringify(data)
+        }
+
+        Logger.debug("\nFetch URL: " + url)
+
+        try {
+            const res = await axios(config)
+            const resultData = res.data
+            if(resultData.data){
+                return resultData.data
+            }
+        } catch (e){
+            if(e.response.status === 401) {
+                const error = {
+                    statusCode: e.response.data.statusCode,
+                    message: e.response.data.statusDescription
+                }
+                throw new FetchError(error)
+            }
             throw new FetchError(e)
         }
     }
