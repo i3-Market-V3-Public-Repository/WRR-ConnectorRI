@@ -481,6 +481,93 @@ class Connector {
     }
 
     /*
+     *
+     * NOTIFICATION SERVICE
+     *
+     */
+    async createNotificationService(marketId, name, endpoint){
+
+        const exists = await this._existsNotificationService(marketId, endpoint)
+        if(exists){
+            return {
+                msg: `Notification service with marketId "${marketId}" and endpoint "${endpoint}" already exists!`
+            }
+        }
+
+        const backplaneUrl = this.endpoint.substring(0, this.endpoint.length-4) + '3000'
+        const url = `${backplaneUrl}/notification-manager-oas/api/v1/services/`
+
+        const data = {
+            "endpoint": endpoint,
+            "name": name,
+            "marketId": marketId
+        };
+
+        const config = {
+            method: 'post',
+            url: url,
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            data : JSON.stringify(data)
+        };
+
+        try {
+            const res = await axios(config)
+            return res.data
+        } catch (e){
+            throw new FetchError(e)
+        }
+
+    }
+
+    async getNotificationService(serviceId){
+        const backplaneUrl = this.endpoint.substring(0, this.endpoint.length-4) + '3000'
+        const url = `${backplaneUrl}/notification-manager-oas/api/v1/services/${serviceId}`
+
+        const config = {
+            method: 'get',
+            url: url,
+            headers: {
+                'accept': 'application/json'
+            }
+        }
+
+        Logger.debug("\nFetch URL: " + url)
+
+        try {
+            const res = await axios(config)
+            return res.data
+        } catch (e){
+            throw new FetchError(e)
+        }
+    }
+
+    async _existsNotificationService(marketId, endpoint){
+        const backplaneUrl = this.endpoint.substring(0, this.endpoint.length-4) + '3000'
+        const url = `${backplaneUrl}/notification-manager-oas/api/v1/services/`
+
+        const config = {
+            method: 'get',
+            url: url,
+            headers: {
+                'accept': 'application/json'
+            }
+        }
+
+        Logger.debug("\nFetch URL: " + url)
+
+        try {
+            const res = await axios(config)
+            const exists = res.data.find(el => el.marketId === marketId && el.endpoint === endpoint)
+            return !!exists
+        } catch (e){
+            throw new FetchError(e)
+        }
+    }
+
+    /*
     *
     * CONTRACTS
     *
