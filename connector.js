@@ -411,7 +411,15 @@ class Connector {
     }
 
     async getUserNotifications(accessToken, idToken, user){
-        return await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification/user/${user}`);
+        const userNotifications = await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification/user/${user}`);
+
+        return userNotifications.sort(function (a,b){
+            const convertedA = a.dateCreated.replaceAll('/', '-')
+            const convertedB = b.dateCreated.replaceAll('/', '-')
+            const dateA = new Date(convertedA)
+            const dateB = new Date(convertedB)
+            return dateB - dateA;
+        })
     }
 
     async getUserUnreadNotifications(accessToken, idToken, user){
