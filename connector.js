@@ -575,35 +575,6 @@ class Connector {
         }
     }
 
-    async processNotificationWebhook(accessToken, idToken){
-        const url = 'https://webhook.site/token/061f4585-3cc6-416f-ae4b-0c56e7b33cba/requests'
-
-        const config = {
-            method: 'GET',
-            url: url
-        }
-
-        Logger.debug("\nFetch URL: " + url)
-
-        try {
-            const res = await axios(config)
-            const resData = res.data.data
-            const postData = resData.filter(el => el.method === 'POST')
-            const lastItem = postData[postData.length - 1]
-            const content = JSON.parse(lastItem.content)
-
-            const message = {
-                msg: `Agreement pending for offering ${content.data.contractualParameters.DataOfferingDescription.dataOfferingId}`,
-                template: content.data.contractualParameters
-            }
-            const type = `${content.action.toLowerCase()}.${content.status.toLowerCase()}`
-
-            return await this.createNotification(accessToken, idToken, 'i3m', content.data.providerDID, type, message, 'OK');
-        } catch (e){
-            throw new FetchError(e)
-        }
-    }
-
     /*
     *
     * CONTRACTS
@@ -676,6 +647,44 @@ class Connector {
 
     async getAgreementsByProvider(accessToken, idToken, providerId){
         return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_provider/${providerId}`);
+    }
+
+    /*
+    *
+    * PRICING MANAGER
+    *
+    */
+    async _fetchPrice(accessToken, idToken, method, service){
+        const url = this.endpoint + service;
+
+        let headers = {
+            'accept': 'application/json',
+            'access_token': accessToken,
+            'id_token': idToken
+        };
+
+        let config = {
+            method: method,
+            url: url,
+            headers: headers
+        };
+
+        Logger.debug("\nFetch URL: " + url);
+
+        try {
+            const res = await axios(config)
+            return res.data;
+        } catch (e){
+            throw new FetchError(e)
+        }
+    }
+
+    async getFee(accessToken, idToken, price){
+        return this._fetchPrice(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/pricingManager/cost/getfee?price=${price}`);
+    }
+
+    async getPrice(accessToken, idToken, parameters){
+        return this._fetchPrice(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/pricingManager/cost/getprice?parameters=${parameters}`);
     }
 }
 
