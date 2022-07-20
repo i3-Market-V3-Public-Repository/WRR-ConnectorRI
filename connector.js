@@ -684,7 +684,7 @@ class Connector {
     }
 
     async getPrice(accessToken, idToken, parameters){
-        return this._fetchPrice(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/pricingManager/cost/getprice?parameters=${parameters}`);
+        return this._fetchPrice(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/pricingManager/price/getprice?parameters=${parameters}`);
     }
 }
 
