@@ -649,6 +649,10 @@ class Connector {
         return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_provider/${providerId}`);
     }
 
+    async signAgreementRawTransaction(accessToken, idToken, data){
+        return await this._fetchContract(accessToken, idToken, 'PUT',`/SdkRefImpl/api/sdk-ri/contract/sign_agreement_raw_transaction`, data);
+    }
+
     /*
     *
     * PRICING MANAGER
