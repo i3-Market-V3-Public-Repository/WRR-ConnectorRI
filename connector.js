@@ -493,86 +493,86 @@ class Connector {
      * NOTIFICATION SERVICE
      *
      */
-    async createNotificationService(marketId, name, endpoint){
+    async _fetchNotificationService(accessToken, idToken, method, service, data){
+        const url = this.endpoint + service;
 
-        const exists = await this._existsNotificationService(marketId, endpoint)
-        if(exists){
+        const headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'access_token': accessToken,
+            'id_token': idToken
+        }
+
+        const config = {
+            method: method,
+            url: url,
+            headers: headers
+        }
+
+        if(data)
+            config.data = JSON.stringify(data)
+
+        Logger.debug("\nFetch URL: " + url)
+
+        try {
+            const res = await axios(config)
+            const resultData = res.data
+            if(resultData.data){
+                return resultData.data
+            }
+        } catch (e){
+            if(e.response.status === 404) {
+                Logger.error(e.response.data.statusDescription)
+                return []
+            }
+            throw new FetchError(e)
+        }
+    }
+
+    async _existsNotificationService(accessToken, idToken, marketId, endpoint){
+        const services = await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/`);
+        return services.find(el => el.marketId === marketId && el.endpoint === endpoint);
+    }
+
+    async _existsNotificationServiceQueue(accessToken, idToken, serviceId, name){
+        const services = await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues`);
+        return services.find(el => el.name === name);
+    }
+
+    async createNotificationService(accessToken, idToken, marketId, name, endpoint){
+        const service = await this._existsNotificationService(accessToken, idToken, marketId, endpoint)
+        if(service){
             return {
-                msg: `Notification service with marketId "${marketId}" and endpoint "${endpoint}" already exists!`
+                service, error: `Notification Service with marketId "${marketId}" and endpoint "${endpoint}" already exists!`,
             }
         }
-
-        const backplaneUrl = this.endpoint.substring(0, this.endpoint.length-4) + '3000'
-        const url = `${backplaneUrl}/notification-manager-oas/api/v1/services/`
-
-        const data = {
-            "endpoint": endpoint,
-            "name": name,
-            "marketId": marketId
-        };
-
-        const config = {
-            method: 'post',
-            url: url,
-            headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            data : JSON.stringify(data)
-        };
-
-        try {
-            const res = await axios(config)
-            return res.data
-        } catch (e){
-            throw new FetchError(e)
-        }
-
+        return await this._fetchNotificationService(accessToken, idToken, 'POST', `/SdkRefImpl/api/sdk-ri/services/`, {endpoint, name, marketId});
     }
 
-    async getNotificationService(serviceId){
-        const backplaneUrl = this.endpoint.substring(0, this.endpoint.length-4) + '3000'
-        const url = `${backplaneUrl}/notification-manager-oas/api/v1/services/${serviceId}`
-
-        const config = {
-            method: 'get',
-            url: url,
-            headers: {
-                'accept': 'application/json'
-            }
-        }
-
-        Logger.debug("\nFetch URL: " + url)
-
-        try {
-            const res = await axios(config)
-            return res.data
-        } catch (e){
-            throw new FetchError(e)
-        }
+    async getNotificationService(accessToken, idToken, serviceId){
+        return await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/${serviceId}`);
     }
 
-    async _existsNotificationService(marketId, endpoint){
-        const backplaneUrl = this.endpoint.substring(0, this.endpoint.length-4) + '3000'
-        const url = `${backplaneUrl}/notification-manager-oas/api/v1/services/`
+    async deleteNotificationService(accessToken, idToken, serviceId){
+        return await this._fetchNotificationService(accessToken, idToken, 'DELETE', `/SdkRefImpl/api/sdk-ri/services/${serviceId}`);
+    }
 
-        const config = {
-            method: 'get',
-            url: url,
-            headers: {
-                'accept': 'application/json'
+    async createNotificationServiceQueue(accessToken, idToken, serviceId, name){
+        const queue = await this._existsNotificationServiceQueue(accessToken, idToken, serviceId, name)
+        if(queue){
+            return {
+                queue, error: `Queue "${name}" for Notification Service "${serviceId}" already exists!`
             }
         }
+        return await this._fetchNotificationService(accessToken, idToken, 'POST', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues`, {name})
+    }
 
-        Logger.debug("\nFetch URL: " + url)
+    async deleteNotificationServiceQueue(accessToken, idToken, serviceId, queueId){
+        return await this._fetchNotificationService(accessToken, idToken, 'DELETE', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues/${queueId}`)
+    }
 
-        try {
-            const res = await axios(config)
-            const exists = res.data.find(el => el.marketId === marketId && el.endpoint === endpoint)
-            return !!exists
-        } catch (e){
-            throw new FetchError(e)
-        }
+    async getNotificationServiceQueue(accessToken, idToken, serviceId, queueId){
+        return await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues/${queueId}`)
     }
 
     /*
@@ -606,13 +606,6 @@ class Connector {
             const res = await axios(config)
             return res.data;
         } catch (e){
-            if(e.response.status === 401) {
-                const error = {
-                    statusCode: e.response.data.statusCode,
-                    message: e.response.data.statusDescription
-                }
-                throw new FetchError(error)
-            }
             throw new FetchError(e)
         }
     }
