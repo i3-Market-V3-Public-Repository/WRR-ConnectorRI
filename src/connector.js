@@ -1,12 +1,12 @@
 const _ = require('underscore')
 const Logger = require("js-logger");
-const {PricingManager} = require("./impl/pricingManager");
 const {Contracts} = require("./impl/contracts");
 const {Notifications} = require("./impl/notifications");
 const {NotificationService} = require("./impl/notificationService");
 const {Oidc} = require("./impl/oidc");
 const {Vc} = require("./impl/vc");
 const {Offerings} = require("./impl/offerings");
+const {PricingManager} = require("./impl/pricingManager");
 
 class Connector {
     constructor(endpoint, logLevel = Logger.OFF) {

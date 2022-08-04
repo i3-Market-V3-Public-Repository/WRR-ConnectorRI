@@ -1,11 +1,13 @@
 const Logger = require("js-logger");
 const axios = require("axios");
 const FetchError = require("./error");
+const {Offerings} = require("./offerings");
 
 class Contracts {
 
     constructor(endpoint) {
         this.endpoint = endpoint;
+        this.offerings = new Offerings(endpoint)
     }
 
     async _fetchContract(accessToken, idToken, method, service, data = undefined, authorization = undefined){
@@ -68,7 +70,7 @@ class Contracts {
         let result = []
         for(let i = 0; i < agreements.length; i++) {
             const agreement = agreements[i];
-            const offering = await this.getOffering(accessToken, idToken, agreement.dataOffering.dataOfferingId);
+            const offering = await this.offerings.getOffering(accessToken, idToken, agreement.dataOffering.dataOfferingId);
             result.push({...agreement, offering});
         }
         return result;

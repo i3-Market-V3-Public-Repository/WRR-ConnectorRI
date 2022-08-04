@@ -8,7 +8,6 @@ class Offerings {
         this.endpoint = endpoint;
     }
 
-
     /*
     * Generic function to fetch data
     */
