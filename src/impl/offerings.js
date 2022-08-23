@@ -1,7 +1,7 @@
 const Logger = require("js-logger");
 const axios = require("axios");
-const {FetchError} = require("./error");
 const _ = require("underscore");
+const {FetchError} = require("./error");
 
 class Offerings {
     constructor(endpoint) {
@@ -114,19 +114,6 @@ class Offerings {
     }
 
     /*
-    * Get list of offerings with contracts count
-    */
-    async _getOfferingsWithContracts(accessToken, idToken, offerings){
-        let result = [];
-        for(let i = 0; i < offerings.length; i++) {
-            const offering = offerings[i];
-            const contracts = await this.getAgreementsByOffering(accessToken, idToken, offering.dataOfferingId);
-            result.push({...offering, contracts: contracts.length});
-        }
-        return result;
-    }
-
-    /*
     * Get list of offerings from a provider
     */
     async getProviderOfferings(accessToken, idToken, providerDid, page, size){
@@ -134,7 +121,7 @@ class Offerings {
         if(_.isEmpty(result)){
             return []
         }
-        return await this._getOfferingsWithContracts(accessToken, idToken, result);
+        return result
     }
 
     /*

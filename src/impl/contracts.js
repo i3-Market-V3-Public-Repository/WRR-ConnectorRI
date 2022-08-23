@@ -1,13 +1,12 @@
 const Logger = require("js-logger");
 const axios = require("axios");
-const FetchError = require("./error");
 const {Offerings} = require("./offerings");
+const {FetchError} = require("./error");
 
 class Contracts {
 
     constructor(endpoint) {
         this.endpoint = endpoint;
-        this.offerings = new Offerings(endpoint)
     }
 
     async _fetchContract(accessToken, idToken, method, service, data = undefined, authorization = undefined){
@@ -65,15 +64,7 @@ class Contracts {
     }
 
     async getAgreementsByConsumer(accessToken, idToken, consumerDid, active){
-        const agreements =  await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${consumerDid}/${active}`);
-
-        let result = []
-        for(let i = 0; i < agreements.length; i++) {
-            const agreement = agreements[i];
-            const offering = await this.offerings.getOffering(accessToken, idToken, agreement.dataOffering.dataOfferingId);
-            result.push({...agreement, offering});
-        }
-        return result;
+        return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${consumerDid}/${active}`);
     }
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){

@@ -1,6 +1,6 @@
 const Logger = require("js-logger");
 const axios = require("axios");
-const FetchError = require("./error");
+const {FetchError} = require("./error");
 
 class Oidc {
     constructor() { }

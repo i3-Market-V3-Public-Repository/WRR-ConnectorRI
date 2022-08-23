@@ -1,6 +1,6 @@
 const Logger = require("js-logger");
 const axios = require("axios");
-const FetchError = require("./error");
+const {FetchError} = require("./error");
 
 class NotificationService{
     constructor(endpoint) {
@@ -44,13 +44,17 @@ class NotificationService{
     }
 
     async _existsNotificationService(accessToken, idToken, marketId, endpoint){
-        const services = await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/`);
+        const services = await this.getNotificationServices(accessToken, idToken);
         return services.find(el => el.marketId === marketId && el.endpoint === endpoint);
     }
 
     async _existsNotificationServiceQueue(accessToken, idToken, serviceId, name){
-        const services = await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues`);
+        const services = await this.getNotificationServices(accessToken, idToken);
         return services.find(el => el.name === name);
+    }
+
+    async getNotificationServices(accessToken, idToken){
+        return await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/`)
     }
 
     async createNotificationService(accessToken, idToken, marketId, name, endpoint){

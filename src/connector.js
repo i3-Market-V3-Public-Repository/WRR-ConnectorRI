@@ -1,4 +1,4 @@
-const _ = require('underscore')
+const _ = require('underscore');
 const Logger = require("js-logger");
 const {Contracts} = require("./impl/contracts");
 const {Notifications} = require("./impl/notifications");
@@ -10,12 +10,11 @@ const {PricingManager} = require("./impl/pricingManager");
 
 class Connector {
     constructor(endpoint, logLevel = Logger.OFF) {
-        this.endpoint = endpoint
         this.offerings = new Offerings(endpoint)
-        this.pricingManager = new PricingManager(endpoint);
-        this.contracts = new Contracts(endpoint);
-        this.notifications = new Notifications(endpoint);
-        this.notificationService = new NotificationService(endpoint);
+        this.pricingManager = new PricingManager(endpoint)
+        this.contracts = new Contracts(endpoint)
+        this.notifications = new Notifications(endpoint)
+        this.notificationService = new NotificationService(endpoint)
         this.oidc = new Oidc()
         this.vc = new Vc()
 
@@ -48,8 +47,15 @@ class Connector {
         return await this.offerings.getOffering(accessToken, idToken, offeringId, page, size)
     }
 
-    async getProviderOfferings(accessToken, idToken, providerId, page, size){
-        return await this.offerings.getProviderOfferings(accessToken, idToken, providerDid, page, size)
+    async getProviderOfferings(accessToken, idToken, provider, page, size){
+        const offerings = await this.offerings.getProviderOfferings(accessToken, idToken, provider, page, size)
+        let result = [];
+        for(let i = 0; i < offerings.length; i++) {
+            const offering = offerings[i];
+            const contracts = await this.contracts.getAgreementsByOffering(accessToken, idToken, offering.dataOfferingId);
+            result.push({...offering, contracts: contracts.length});
+        }
+        return result;
     }
 
     async getCategoryOfferings(accessToken, idToken, category, page, size){
@@ -132,6 +138,10 @@ class Connector {
      * NOTIFICATION SERVICE
      *
      */
+    async getNotificationServices(accessToken, idToken){
+        return await this.notificationService.getNotificationServices(accessToken, idToken)
+    }
+
     async createNotificationService(accessToken, idToken, marketId, name, endpoint){
         return await this.notificationService.createNotificationService(accessToken, idToken, marketId, name, endpoint)
     }
@@ -185,8 +195,16 @@ class Connector {
         return await this.contracts.getAgreement(accessToken, idToken, agreementId)
     }
 
-    async getAgreementsByConsumer(accessToken, idToken, consumerId, active){
-        return await this.contracts.getAgreementsByConsumer(accessToken, idToken, consumerId, active)
+    async getAgreementsByConsumer(accessToken, idToken, consumerDid, active){
+        const agreements = await this.contracts.getAgreementsByConsumer(accessToken, idToken, consumerDid, active)
+
+        let result = []
+        for(let i = 0; i < agreements.length; i++) {
+            const agreement = agreements[i];
+            const offering = await this.offerings.getOffering(accessToken, idToken, agreement.dataOffering.dataOfferingId);
+            result.push({...agreement, offering});
+        }
+        return result;
     }
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){
