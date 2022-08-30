@@ -27,7 +27,7 @@ class PricingManager {
 
         try {
             const res = await axios(config)
-            return res.data;
+            return res.data
         } catch (e) {
             throw new FetchError(e)
         }

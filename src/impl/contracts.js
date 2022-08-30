@@ -33,7 +33,10 @@ class Contracts {
 
         try {
             const res = await axios(config)
-            return res.data;
+            const resultData = res.data
+            if(resultData.data){
+                return resultData.data
+            }
         } catch (e){
             throw new FetchError(e)
         }
