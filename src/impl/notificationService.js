@@ -43,26 +43,28 @@ class NotificationService{
         }
     }
 
-    async _existsNotificationService(accessToken, idToken, marketId, endpoint){
+    async _existsNotificationService(accessToken, idToken, name, endpoint){
         const services = await this.getNotificationServices(accessToken, idToken);
-        return services.find(el => el.marketId === marketId && el.endpoint === endpoint);
+        return services.find(el => el.name === name && el.endpoint === endpoint);
     }
 
     async _existsNotificationServiceQueue(accessToken, idToken, serviceId, name){
-        const services = await this.getNotificationServices(accessToken, idToken);
-        return services.find(el => el.name === name);
+        const services = await this.getNotificationServiceQueues(accessToken, idToken, serviceId);
+        return services.queues.find(el => el.name === name);
     }
 
     async getNotificationServices(accessToken, idToken){
         return await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/`)
     }
 
+    async getNotificationServiceQueues(accessToken, idToken, serviceId){
+        return await this._fetchNotificationService(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/services/${serviceId}`)
+    }
+
     async createNotificationService(accessToken, idToken, marketId, name, endpoint){
-        const service = await this._existsNotificationService(accessToken, idToken, marketId, endpoint)
+        const service = await this._existsNotificationService(accessToken, idToken, name, endpoint)
         if(service){
-            return {
-                service, error: `Notification Service with marketId "${marketId}" and endpoint "${endpoint}" already exists!`,
-            }
+            return {...service, error: `Notification Service with marketId "${marketId}" and endpoint "${endpoint}" already exists!`}
         }
         return await this._fetchNotificationService(accessToken, idToken, 'POST', `/SdkRefImpl/api/sdk-ri/services/`, {endpoint, name, marketId});
     }
@@ -78,11 +80,9 @@ class NotificationService{
     async createNotificationServiceQueue(accessToken, idToken, serviceId, name){
         const queue = await this._existsNotificationServiceQueue(accessToken, idToken, serviceId, name)
         if(queue){
-            return {
-                queue, error: `Queue "${name}" for Notification Service "${serviceId}" already exists!`
-            }
+            return { ...queue, error: `Queue "${name}" for Notification Service "${serviceId}" already exists!`}
         }
-        return await this._fetchNotificationService(accessToken, idToken, 'POST', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues`, {name})
+        // return await this._fetchNotificationService(accessToken, idToken, 'POST', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues`, {name})
     }
 
     async deleteNotificationServiceQueue(accessToken, idToken, serviceId, queueId){

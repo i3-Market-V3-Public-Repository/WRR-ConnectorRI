@@ -67,7 +67,8 @@ class Contracts {
     }
 
     async getAgreementsByConsumer(accessToken, idToken, consumerDid, active){
-        return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${consumerDid}/${active}`);
+        // return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${consumerDid}/${active}`); TODO replace after SDK-RI update
+        return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${consumerDid}`);
     }
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){
