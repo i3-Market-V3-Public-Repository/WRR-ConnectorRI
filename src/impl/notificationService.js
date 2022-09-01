@@ -50,7 +50,7 @@ class NotificationService{
 
     async _existsNotificationServiceQueue(accessToken, idToken, serviceId, name){
         const services = await this.getNotificationServiceQueues(accessToken, idToken, serviceId);
-        return services.queues.find(el => el.name === name);
+        return services.queues.find(el => el.name === name); // TODO update after SDK-RI update (remove 'queues')
     }
 
     async getNotificationServices(accessToken, idToken){
