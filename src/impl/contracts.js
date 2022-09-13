@@ -1,6 +1,5 @@
 const Logger = require("js-logger");
 const axios = require("axios");
-const {Offerings} = require("./offerings");
 const {FetchError} = require("./error");
 
 class Contracts {
@@ -72,6 +71,7 @@ class Contracts {
     }
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){
+        // TODO waiting for SDK-RI fix
         return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_data_offering/${offeringId}`);
     }
 

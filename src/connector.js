@@ -48,6 +48,9 @@ class Connector {
     }
 
     async getProviderOfferings(accessToken, idToken, provider, page, size){
+        return await this.offerings.getProviderOfferings(accessToken, idToken, provider, page, size)
+
+        // TODO replace for this code after SDK-RI update
         const offerings = await this.offerings.getProviderOfferings(accessToken, idToken, provider, page, size)
         let result = [];
         for(let i = 0; i < offerings.length; i++) {
