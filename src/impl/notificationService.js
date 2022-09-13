@@ -64,15 +64,15 @@ class NotificationService{
     async createNotificationService(accessToken, idToken, marketId, name, endpoint){
         const service = await this._existsNotificationService(accessToken, idToken, name, endpoint)
         if(service){
-            console.log(`[Notification Service] name "${name}" already exists.`);
+            Logger.debug(`[Notification Service] name "${name}" already exists.`);
 
             if(service.endpoint === endpoint){
                 // notification service with same endpoint, return the object
-                console.log(`[Notification Service] endpoint "${endpoint}" exists. Return the object.`)
+                Logger.debug(`[Notification Service] endpoint "${endpoint}" exists. Return the object.`)
                 return service
             }
             else{
-                console.log(`[Notification Service] New endpoint. Delete previous service and create a new one with new endpoint.`)
+                Logger.debug(`[Notification Service] New endpoint. Delete previous service and create a new one with new endpoint.`)
                 // delete previous notification service
                 await this.deleteNotificationService(accessToken, idToken, service.id);
                 // create a new notification service with new endpoint
@@ -93,7 +93,7 @@ class NotificationService{
     async createNotificationServiceQueue(accessToken, idToken, serviceId, name){
         const queue = await this._existsNotificationServiceQueue(accessToken, idToken, serviceId, name)
         if(queue){
-            console.log(`[Notification Service] Queue "${name}" already exists. Return the object`);
+            Logger.debug(`[Notification Service] Queue "${name}" already exists. Return the object`);
             return queue
         }
         return await this._fetchNotificationService(accessToken, idToken, 'POST', `/SdkRefImpl/api/sdk-ri/services/${serviceId}/queues`, {name})
