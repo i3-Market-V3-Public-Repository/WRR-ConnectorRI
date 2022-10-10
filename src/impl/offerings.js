@@ -161,6 +161,17 @@ class Offerings {
     }
 
     /*
+    * Get list of offerings filtered by title or dataset keywords
+    */
+    async getOfferingsByText(accessToken, idToken, text){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/textSearch/text/${text}`)
+        if(_.isEmpty(result)){
+            return []
+        }
+        return result
+    }
+
+    /*
     * Register an offering
     */
 
@@ -272,6 +283,46 @@ class Offerings {
             throw new FetchError(e)
         }
     }
+
+    /*
+    * FEDERATED QUERIES
+    */
+    async getFederatedOffering(accessToken, idToken, offeringId){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-offering/${offeringId}/offeringId`)
+        if(_.isEmpty(result)){
+            return []
+        }
+        return result
+    }
+
+    async getFederatedProviderActiveOfferings(accessToken, idToken, provider){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-activeOffering/${provider}/providerId`)
+        if(_.isEmpty(result)){
+            return []
+        }
+        return result
+    }
+
+    async getFederatedCategoryActiveOfferings(accessToken, idToken, category){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-activeOffering/${category}`)
+        if(_.isEmpty(result)){
+            return []
+        }
+        return result
+    }
+
+    async getFederatedTextActiveOfferings(accessToken, idToken, text){
+
+    }
+
+    async getFederatedActiveOfferings(accessToken, idToken){
+
+    }
+
+    async getFederatedProviders(accessToken, idToken){
+        
+    }
+
 }
 
 exports.Offerings  = Offerings

@@ -81,6 +81,22 @@ class Connector {
         return await this.offerings.updateOffering(accessToken, idToken, data)
     }
 
+    async getOfferingsByText(accessToken, idToken, text){
+        return await this.offerings.getOfferingsByText(accessToken, idToken, text)
+    }
+
+    async getFederatedOffering(accessToken, idToken, offeringId){
+        return await this.offerings.getFederatedOffering(accessToken, idToken, offeringId)
+    }
+
+    async getFederatedProviderActiveOfferings(accessToken, idToken, provider){
+        return await this.offerings.getFederatedProviderActiveOfferings(accessToken, idToken, provider)
+    }
+
+    async getFederatedCategoryActiveOfferings(accessToken, idToken, category){
+        return await this.offerings.getFederatedCategoryActiveOfferings(accessToken, idToken, category);
+    }
+
     /*
     *
     * OIDC
