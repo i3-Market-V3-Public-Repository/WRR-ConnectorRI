@@ -312,17 +312,28 @@ class Offerings {
     }
 
     async getFederatedTextActiveOfferings(accessToken, idToken, text){
-
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-Offering/getActiveOfferingByText/${text}/text`)
+        if(_.isEmpty(result)){
+            return []
+        }
+        return result
     }
 
     async getFederatedActiveOfferings(accessToken, idToken){
-
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/federated-offerings-list/on-active`)
+        if(_.isEmpty(result)){
+            return []
+        }
+        return result
     }
 
     async getFederatedProviders(accessToken, idToken){
-        
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/federated-providers-list`)
+        if(_.isEmpty(result)){
+            return []
+        }
+        return result
     }
-
 }
 
 exports.Offerings  = Offerings

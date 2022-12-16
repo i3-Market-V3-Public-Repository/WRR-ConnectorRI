@@ -28,6 +28,9 @@ class Contracts {
         if(data)
             config.data = JSON.stringify(data)
 
+
+        console.log(config)
+
         Logger.debug("\nFetch URL: " + url);
 
         try {
@@ -42,7 +45,7 @@ class Contracts {
     }
 
     async getContractTemplate(accessToken, idToken, offeringId){
-        return await this._fetchContract(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/contract/get-contract-template/${offeringId}`);
+        return await this._fetchContract(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/contract/get-contract-template/639ad4a70dfc787c12b8c12a`);
     }
 
     async createDataPurchase(accessToken, idToken, originMarketId, consumerDid, authorization, data){

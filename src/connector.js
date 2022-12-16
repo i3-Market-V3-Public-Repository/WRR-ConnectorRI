@@ -97,6 +97,18 @@ class Connector {
         return await this.offerings.getFederatedCategoryActiveOfferings(accessToken, idToken, category);
     }
 
+    async getFederatedTextActiveOfferings(accessToken, idToken, text){
+        return await this.offerings.getFederatedTextActiveOfferings(accessToken, idToken, text);
+    }
+
+    async getFederatedActiveOfferings(accessToken, idToken){
+        return await this.offerings.getFederatedActiveOfferings(accessToken, idToken);
+    }
+
+    async getFederatedProviders(accessToken, idToken){
+        return await this.offerings.getFederatedProviders(accessToken, idToken);
+    }
+
     /*
     *
     * OIDC
