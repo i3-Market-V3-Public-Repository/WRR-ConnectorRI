@@ -189,7 +189,7 @@ class Offerings {
             method: 'POST',
             url: url,
             headers: headers,
-            data : JSON.stringify(data)
+            data : data
         }
 
         Logger.debug("\nFetch URL: " + url)
@@ -264,7 +264,7 @@ class Offerings {
             method: 'PATCH',
             url: url,
             headers: headers,
-            data : JSON.stringify(data)
+            data : data
         }
 
         Logger.debug("\nFetch URL: " + url)

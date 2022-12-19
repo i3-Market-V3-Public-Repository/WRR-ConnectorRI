@@ -28,9 +28,6 @@ class Contracts {
         if(data)
             config.data = JSON.stringify(data)
 
-
-        console.log(config)
-
         Logger.debug("\nFetch URL: " + url);
 
         try {
