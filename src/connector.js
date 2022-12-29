@@ -81,32 +81,34 @@ class Connector {
         return await this.offerings.updateOffering(accessToken, idToken, data)
     }
 
-    async getOfferingsByText(accessToken, idToken, text){
-        return await this.offerings.getOfferingsByText(accessToken, idToken, text)
+    async getOfferingsByText(accessToken, idToken, text, page, size){
+        return await this.offerings.getOfferingsByText(accessToken, idToken, text, page, size)
     }
+
+    /* Federated Methods */
 
     async getFederatedOffering(accessToken, idToken, offeringId){
         return await this.offerings.getFederatedOffering(accessToken, idToken, offeringId)
     }
 
-    async getFederatedProviderActiveOfferings(accessToken, idToken, provider){
-        return await this.offerings.getFederatedProviderActiveOfferings(accessToken, idToken, provider)
+    async getFederatedProviderActiveOfferings(accessToken, idToken, provider, page, size){
+        return await this.offerings.getFederatedProviderActiveOfferings(accessToken, idToken, provider, page, size)
     }
 
-    async getFederatedCategoryActiveOfferings(accessToken, idToken, category){
-        return await this.offerings.getFederatedCategoryActiveOfferings(accessToken, idToken, category);
+    async getFederatedCategoryActiveOfferings(accessToken, idToken, category, page, size){
+        return await this.offerings.getFederatedCategoryActiveOfferings(accessToken, idToken, category, page, size);
     }
 
-    async getFederatedTextActiveOfferings(accessToken, idToken, text){
-        return await this.offerings.getFederatedTextActiveOfferings(accessToken, idToken, text);
+    async getFederatedTextActiveOfferings(accessToken, idToken, text, page,  size){
+        return await this.offerings.getFederatedTextActiveOfferings(accessToken, idToken, text, page, size);
     }
 
-    async getFederatedActiveOfferings(accessToken, idToken){
-        return await this.offerings.getFederatedActiveOfferings(accessToken, idToken);
+    async getFederatedActiveOfferings(accessToken, idToken, page, size){
+        return await this.offerings.getFederatedActiveOfferings(accessToken, idToken, page, size);
     }
 
-    async getFederatedProviders(accessToken, idToken){
-        return await this.offerings.getFederatedProviders(accessToken, idToken);
+    async getFederatedProviders(accessToken, idToken, page, size){
+        return await this.offerings.getFederatedProviders(accessToken, idToken, page, size);
     }
 
     /*

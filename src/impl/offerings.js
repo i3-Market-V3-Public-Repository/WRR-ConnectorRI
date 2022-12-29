@@ -295,40 +295,40 @@ class Offerings {
         return result
     }
 
-    async getFederatedProviderActiveOfferings(accessToken, idToken, provider){
-        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-activeOffering/${provider}/providerId`)
+    async getFederatedProviderActiveOfferings(accessToken, idToken, provider, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-activeOffering/${provider}/providerId`, page, size)
         if(_.isEmpty(result)){
             return []
         }
         return result
     }
 
-    async getFederatedCategoryActiveOfferings(accessToken, idToken, category){
-        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-activeOffering/${category}`)
+    async getFederatedCategoryActiveOfferings(accessToken, idToken, category, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-activeOffering/${category}`, page, size)
         if(_.isEmpty(result)){
             return []
         }
         return result
     }
 
-    async getFederatedTextActiveOfferings(accessToken, idToken, text){
-        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-Offering/getActiveOfferingByText/${text}/text`)
+    async getFederatedTextActiveOfferings(accessToken, idToken, text, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-Offering/getActiveOfferingByText/${text}/text`, page, size)
         if(_.isEmpty(result)){
             return []
         }
         return result
     }
 
-    async getFederatedActiveOfferings(accessToken, idToken){
-        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/federated-offerings-list/on-active`)
+    async getFederatedActiveOfferings(accessToken, idToken, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/federated-offerings-list/on-active`, page, size)
         if(_.isEmpty(result)){
             return []
         }
         return result
     }
 
-    async getFederatedProviders(accessToken, idToken){
-        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/federated-providers-list`)
+    async getFederatedProviders(accessToken, idToken, page, size){
+        const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/offering/federated-providers-list`, page, size)
         if(_.isEmpty(result)){
             return []
         }
@@ -336,4 +336,4 @@ class Offerings {
     }
 }
 
-exports.Offerings  = Offerings
+exports.Offerings = Offerings
