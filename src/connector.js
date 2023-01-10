@@ -7,6 +7,7 @@ const {Oidc} = require("./impl/oidc");
 const {Vc} = require("./impl/vc");
 const {Offerings} = require("./impl/offerings");
 const {PricingManager} = require("./impl/pricingManager");
+const {Ratings} = require("./impl/ratings")
 
 class Connector {
     constructor(endpoint, logLevel = Logger.OFF) {
@@ -17,6 +18,7 @@ class Connector {
         this.notificationService = new NotificationService(endpoint)
         this.oidc = new Oidc()
         this.vc = new Vc()
+        this.ratings = new Ratings(endpoint);
 
         Logger.useDefaults()
         Logger.setLevel(logLevel)
@@ -259,6 +261,82 @@ class Connector {
 
     async getPrice(accessToken, idToken, parameters) {
         return await this.pricingManager.getPrice(accessToken, idToken, parameters)
+    }
+
+    /*
+     * 
+     * RATINGS
+     * 
+     */
+    async getAgreementIsRated(agreementID, accessToken, idToken){
+        return this.ratings.getAgreementIsRated(agreementID,accessToken,idToken)
+    }
+
+    async getAgreementRating(agreementID, accessToken, idToken){
+        return this.ratings.getAgreementRating(agreementID, accessToken, idToken)
+    }
+
+    async getConsumerAgreements(consumerPK, accessToken, idToken){
+        return this.ratings.getConsumerAgreements(consumerPK, accessToken, idToken)
+    }
+
+    async getConsumerRatings(consumerDID, accessToken, idToken){
+        return this.ratings.getConsumerRatings(consumerDID,accessToken, idToken)
+    }
+
+    async getProviderAgreements(providerPK, accessToken, idToken){
+        return this.ratings.getProviderAgreements(providerPK,accessToken,idToken)
+    }
+
+    async getProviderRatings(providerDID, accessToken, idToken){
+        return this.ratings.getProviderRatings(providerDID,accessToken,idToken)
+    }
+
+    async getProviderTotalRating(providerDID, accessToken, idToken){
+        return this.ratings.getProviderTotalRating(providerDID,accessToken,idToken)
+    }
+
+    async getQuestions(accessToken, idToken){
+        return this.ratings.getQuestions(accessToken, idToken)
+    }
+
+    async getAllRatings(accessToken, idToken){
+        return this.ratings.getAllRatings(accessToken,idToken)
+    }
+
+    async createRating(accessToken, idToken, byConsumer, forProvider, onTransaction, subRatings, message=undefined){
+        let data ={}
+        data.byConsumer = byConsumer
+        data.forProvider = forProvider
+        data.onTransaction = onTransaction
+        data.subRatings = subRatings
+        if (message)
+            data.msg = message
+
+        return this.ratings.createRating(data,accessToken,idToken)
+    }
+
+    async getRating(id, accessToken, idToken){
+        return this.ratings.getRating(id, accessToken, idToken)
+    }
+
+    async editRating(id, accessToken, idToken, subRatings=undefined, message=undefined){
+        let data = {}
+        if (subRatings)
+            data.subRatings = subRatings
+        if (message)
+            data.msg = message
+        return this.ratings.editRating(id, accessToken, idToken, data)
+    }
+
+    async respondToRating(id, accessToken, idToken, response){
+        let data = {}
+        data.response = response
+        return this.ratings.respondToRating(id, accessToken, idToken, data)
+    }
+
+    async deleteRating(id, accessToken, idToken){
+        return this.ratings.deleteRating(id, accessToken, idToken)
     }
 }
 
