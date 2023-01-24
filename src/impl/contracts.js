@@ -42,7 +42,7 @@ class Contracts {
     }
 
     async getContractTemplate(accessToken, idToken, offeringId){
-        return await this._fetchContract(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/contract/get-contract-template/639ad4a70dfc787c12b8c12a`);
+        return await this._fetchContract(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/contract/get-contract-template/${offeringId}`);
     }
 
     async createDataPurchase(accessToken, idToken, originMarketId, consumerDid, authorization, data){
@@ -65,18 +65,12 @@ class Contracts {
         return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/get_agreement/${agreementId}`);
     }
 
-    async getAgreementsByConsumer(accessToken, idToken, consumerDid, active){
-        // return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${consumerDid}/${active}`); TODO replace after SDK-RI update
-        return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${consumerDid}`);
+    async getAgreementsByConsumer(accessToken, idToken, publicKeys, active){
+        return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${publicKeys}/${active}`);
     }
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){
-        // TODO waiting for SDK-RI fix
         return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_data_offering/${offeringId}`);
-    }
-
-    async signAgreementRawTransaction(accessToken, idToken, data){
-        return await this._fetchContract(accessToken, idToken, 'PUT',`/SdkRefImpl/api/sdk-ri/contract/sign_agreement_raw_transaction`, data);
     }
 }
 

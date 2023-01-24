@@ -48,15 +48,12 @@ class Connector {
     }
 
     async getProviderOfferings(accessToken, idToken, provider, page, size){
-        return await this.offerings.getProviderOfferings(accessToken, idToken, provider, page, size)
-
-        // TODO replace for this code after SDK-RI update
         const offerings = await this.offerings.getProviderOfferings(accessToken, idToken, provider, page, size)
         let result = [];
         for(let i = 0; i < offerings.length; i++) {
             const offering = offerings[i];
             const contracts = await this.contracts.getAgreementsByOffering(accessToken, idToken, offering.dataOfferingId);
-            result.push({...offering, contracts: contracts.length});
+            result.push({...offering, contracts: contracts});
         }
         return result;
     }
@@ -88,7 +85,9 @@ class Connector {
     /* Federated Methods */
 
     async getFederatedOffering(accessToken, idToken, offeringId){
-        return await this.offerings.getFederatedOffering(accessToken, idToken, offeringId)
+        const offering = await this.offerings.getFederatedOffering(accessToken, idToken, offeringId);
+        const contracts = await this.contracts.getAgreementsByOffering(accessToken, idToken, offeringId);
+        return {...offering, contracts}
     }
 
     async getFederatedProviderActiveOfferings(accessToken, idToken, provider, page, size){
@@ -225,12 +224,16 @@ class Connector {
     }
 
     async getAgreement(accessToken, idToken, agreementId){
-        return await this.contracts.getAgreement(accessToken, idToken, agreementId)
+        const agreement = await this.contracts.getAgreement(accessToken, idToken, agreementId)
+        const offering = await this.offerings.getOffering(accessToken, idToken, agreement.dataOffering.dataOfferingId);
+        return {...agreement, offering};
     }
 
-    async getAgreementsByConsumer(accessToken, idToken, consumerDid, active){
-        const agreements = await this.contracts.getAgreementsByConsumer(accessToken, idToken, consumerDid, active)
+    async getAgreementsByConsumer(accessToken, idToken, publicKeys, active){
+        // TODO update after discuss with Yvonne
+        return []
 
+        const agreements = await this.contracts.getAgreementsByConsumer(accessToken, idToken, publicKeys, active)
         let result = []
         for(let i = 0; i < agreements.length; i++) {
             const agreement = agreements[i];
@@ -242,10 +245,6 @@ class Connector {
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){
         return await this.contracts.getAgreementsByOffering(accessToken, idToken, offeringId)
-    }
-
-    async signAgreementRawTransaction(accessToken, idToken, data){
-        return await this.contracts.signAgreementRawTransaction(accessToken, idToken, 'PUT',`/SdkRefImpl/api/sdk-ri/contract/sign_agreement_raw_transaction`, data);
     }
 
     /*
