@@ -48,14 +48,7 @@ class Connector {
     }
 
     async getProviderOfferings(accessToken, idToken, provider, page, size){
-        const offerings = await this.offerings.getProviderOfferings(accessToken, idToken, provider, page, size)
-        let result = [];
-        for(let i = 0; i < offerings.length; i++) {
-            const offering = offerings[i];
-            const contracts = await this.contracts.getAgreementsByOffering(accessToken, idToken, offering.dataOfferingId);
-            result.push({...offering, contracts: contracts});
-        }
-        return result;
+        return  await this.offerings.getProviderOfferings(accessToken, idToken, provider, page, size)
     }
 
     async getCategoryOfferings(accessToken, idToken, category, page, size){
@@ -85,9 +78,7 @@ class Connector {
     /* Federated Methods */
 
     async getFederatedOffering(accessToken, idToken, offeringId){
-        const offering = await this.offerings.getFederatedOffering(accessToken, idToken, offeringId);
-        const contracts = await this.contracts.getAgreementsByOffering(accessToken, idToken, offeringId);
-        return {...offering, contracts}
+        return await this.offerings.getFederatedOffering(accessToken, idToken, offeringId);
     }
 
     async getFederatedProviderActiveOfferings(accessToken, idToken, provider, page, size){
@@ -224,16 +215,14 @@ class Connector {
     }
 
     async getAgreement(accessToken, idToken, agreementId){
-        const agreement = await this.contracts.getAgreement(accessToken, idToken, agreementId)
-        const offering = await this.offerings.getOffering(accessToken, idToken, agreement.dataOffering.dataOfferingId);
-        return {...agreement, offering};
+        return await this.contracts.getAgreement(accessToken, idToken, agreementId)
     }
 
     async getAgreementsByConsumer(accessToken, idToken, publicKeys, active){
-        // TODO update after discuss with Yvonne
-        return []
-
         const agreements = await this.contracts.getAgreementsByConsumer(accessToken, idToken, publicKeys, active)
+
+        return agreements
+
         let result = []
         for(let i = 0; i < agreements.length; i++) {
             const agreement = agreements[i];

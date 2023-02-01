@@ -11,7 +11,7 @@ class Offerings {
     /*
     * Generic function to fetch data
     */
-    async _fetchData(accessToken, idToken, method, service, page = undefined, size = undefined){
+    async _fetchData(accessToken, idToken, method, service, page = 0, size = 99){
         const url = this.endpoint + service
 
         const headers = {
