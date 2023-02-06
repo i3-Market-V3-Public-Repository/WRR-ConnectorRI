@@ -218,18 +218,8 @@ class Connector {
         return await this.contracts.getAgreement(accessToken, idToken, agreementId)
     }
 
-    async getAgreementsByConsumer(accessToken, idToken, publicKeys, active){
-        const agreements = await this.contracts.getAgreementsByConsumer(accessToken, idToken, publicKeys, active)
-
-        return agreements
-
-        let result = []
-        for(let i = 0; i < agreements.length; i++) {
-            const agreement = agreements[i];
-            const offering = await this.offerings.getOffering(accessToken, idToken, agreement.dataOffering.dataOfferingId);
-            result.push({...agreement, offering});
-        }
-        return result;
+    async getAgreementsByConsumer(accessToken, idToken, data){
+        return await this.contracts.getAgreementsByConsumer(accessToken, idToken, data)
     }
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){

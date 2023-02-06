@@ -65,8 +65,8 @@ class Contracts {
         return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/get_agreement/${agreementId}`);
     }
 
-    async getAgreementsByConsumer(accessToken, idToken, publicKeys, active){
-        return await this._fetchContract(accessToken, idToken, 'GET',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer/${publicKeys}/${active}`);
+    async getAgreementsByConsumer(accessToken, idToken, data){
+        return await this._fetchContract(accessToken, idToken, 'POST',`/SdkRefImpl/api/sdk-ri/contract/check_agreements_by_consumer`, data);
     }
 
     async getAgreementsByOffering(accessToken, idToken, offeringId){
