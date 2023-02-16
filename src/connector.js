@@ -7,6 +7,7 @@ const {Oidc} = require("./impl/oidc");
 const {Vc} = require("./impl/vc");
 const {Offerings} = require("./impl/offerings");
 const {PricingManager} = require("./impl/pricingManager");
+const {DataTransfer} = require("./impl/dataTransfer");
 
 class Connector {
     constructor(endpoint, logLevel = Logger.OFF) {
@@ -17,6 +18,7 @@ class Connector {
         this.notificationService = new NotificationService(endpoint)
         this.oidc = new Oidc()
         this.vc = new Vc()
+        this.dataTransfer = new DataTransfer();
 
         Logger.useDefaults()
         Logger.setLevel(logLevel)
@@ -238,6 +240,24 @@ class Connector {
     async getPrice(accessToken, idToken, parameters) {
         return await this.pricingManager.getPrice(accessToken, idToken, parameters)
     }
+
+    /*
+    *
+    * DATA TRANSFER
+    *
+    */
+    async publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest){
+        return await this.dataTransfer.publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest)
+    }
+
+    async payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){
+        return await this.dataTransfer.payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest)
+    }
+
+    async downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest){
+        return await this.dataTransfer.downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest)
+    }
+
 }
 
 exports.Connector = Connector
