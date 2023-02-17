@@ -38,59 +38,59 @@ class Ratings {
     }
 
     async getAgreementIsRated(agreementID, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/agreements/${agreementID}/isRated`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/agreements/${agreementID}/isRated`)
     }
 
     async getAgreementRating(agreementID, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/agreements/${agreementID}/rating`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/agreements/${agreementID}/rating`)
     }
 
     async getConsumerAgreements(consumerPK, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/consumers/${consumerPK}/agreements`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/consumers/${consumerPK}/agreements`)
     }
 
     async getConsumerRatings(consumerDID, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/consumers/${consumerDID}/ratings`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/consumers/${consumerDID}/ratings`)
     }
 
     async getProviderAgreements(providerPK, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/providers/${providerPK}/agreements`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/providers/${providerPK}/agreements`)
     }
 
     async getProviderRatings(providerDID, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/providers/${providerDID}/ratings`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/providers/${providerDID}/ratings`)
     }
 
     async getProviderTotalRating(providerDID, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/providers/${providerDID}/totalRating`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/providers/${providerDID}/totalRating`)
     }
 
     async getQuestions(accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/questions`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/questions`)
     }
 
     async getAllRatings(accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/ratings`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/ratings`)
     }
 
     async createRating(data, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "POST", `/rating/api/ratings`, data)
+        return this._fetchRatings(accessToken, idToken, "POST", `/SdkRefImpl/api/sdk-ri/rating/api/ratings`, data)
     }
 
     async getRating(id, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "GET", `/rating/api/ratings/${id}`)
+        return this._fetchRatings(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/rating/api/ratings/${id}`)
     }
 
     async editRating(id, accessToken, idToken, data){
-        return this._fetchRatings(accessToken, idToken, "PUT", `/rating/api/ratings/${id}`, data)
+        return this._fetchRatings(accessToken, idToken, "PUT", `/SdkRefImpl/api/sdk-ri/rating/api/ratings/${id}`, data)
     }
 
     async respondToRating(id, accessToken, idToken, data){
-        return this._fetchRatings(accessToken, idToken, "POST", `/rating/api/ratings/${id}/respond`, data)
+        return this._fetchRatings(accessToken, idToken, "POST", `/SdkRefImpl/api/sdk-ri/rating/api/ratings/${id}/respond`, data)
     }
 
     async deleteRating(id, accessToken, idToken){
-        return this._fetchRatings(accessToken, idToken, "DELETE", `/rating/api/ratings/${id}`)
+        return this._fetchRatings(accessToken, idToken, "DELETE", `/SdkRefImpl/api/sdk-ri/rating/api/ratings/${id}`)
     }
     
 }
