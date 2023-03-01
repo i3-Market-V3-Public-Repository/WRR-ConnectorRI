@@ -1,6 +1,6 @@
 {
   "name": "@unparallel/connector-ri",
-  "version": "1.3.6-alpha.0",
+  "version": "1.3.7-alpha.0",
   "description": "This connector implements the logic needed to connect the SDK-RI, providing an abstraction used by the Web-RI.",
   "main": "src/connector.js",
   "dependencies": {
