@@ -43,7 +43,6 @@ class Offerings {
                 return resultData.data
             }
         } catch (e){
-            console.log(e)
             if(e.response.status === 404) {
                 Logger.error(e.response.data.statusDescription)
                 return []
@@ -291,7 +290,6 @@ class Offerings {
     async getFederatedOffering(accessToken, idToken, offeringId){
         const result = await this._fetchData(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/federated-offering/${offeringId}/offeringId`)
         if(_.isEmpty(result)){
-            console.log(result)
             return []
         }
         return result
