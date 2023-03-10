@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const Logger = require("js-logger");
 const {Contracts} = require("./impl/contracts");
 const {Notifications} = require("./impl/notifications");
@@ -31,10 +30,6 @@ class Connector {
     * OFFERINGS
     *
     */
-    async getOfferingTemplate(accessToken, idToken){
-        return await this.offerings.getOfferingTemplate(accessToken, idToken)
-    }
-
     async getCategories(accessToken, idToken, page, size){
         return await this.offerings.getCategories(accessToken, idToken, page, size)
     }
@@ -57,10 +52,6 @@ class Connector {
 
     async getCategoryOfferings(accessToken, idToken, category, page, size){
         return await this.offerings.getCategoryOfferings(accessToken, idToken, category, page, size)
-    }
-
-    async getOfferingsByCategory(accessToken, idToken, page, size){
-        return await this.offerings.getOfferingsByCategory(accessToken, idToken, page, size)
     }
 
     async registerOffering(accessToken, idToken, data){
@@ -202,10 +193,6 @@ class Connector {
         return await this.contracts.getContractTemplate(accessToken, idToken, offeringId)
     }
 
-    async createDataPurchase(accessToken, idToken, originMarketId, consumerDid, authorization, data){
-        return await this.contracts.createDataPurchase(accessToken, idToken, originMarketId, consumerDid, authorization, data)
-    }
-
     async createAgreementRawTransaction(accessToken, idToken, senderAddress, data){
         return await this.contracts.createAgreementRawTransaction(accessToken, idToken, senderAddress, data)
     }
@@ -250,6 +237,14 @@ class Connector {
     */
     async publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest){
         return await this.dataTransfer.publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest)
+    }
+
+    async getDataExchangeAgreement(accessToken, idToken, agreementId){
+        return await this.dataTransfer.getDataExchangeAgreement(accessToken, idToken, agreementId)
+    }
+
+    async registerConnector(dataAccessEndpoint, bodyRequest){
+        return await this.dataTransfer.registerConnector(dataAccessEndpoint, bodyRequest)
     }
 
     async payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){

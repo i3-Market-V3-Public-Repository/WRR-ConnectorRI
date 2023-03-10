@@ -8,7 +8,7 @@ class Notifications {
         this.endpoint = endpoint;
     }
 
-    async _fetchNotification(accessToken, idToken, method, service){
+    async _fetchNotification(accessToken, idToken, method, service, throwError = true){
         const url = this.endpoint + service;
 
         const headers = {
@@ -33,27 +33,27 @@ class Notifications {
                 return resultData.data
             }
         } catch (e){
+            if(throwError){
+                const errorObj = {
+                    statusCode: e.response.data.statusCode,
+                    statusDescription: e.response.data.statusDescription,
+                    errorMessage: e.response.data.errorMessage ? JSON.parse(e.response.data.errorMessage) : ''
+                }
+                throw new FetchError(errorObj)
+            }
             if(e.response.status === 404) {
                 Logger.error(e.response.data.statusDescription)
                 return []
             }
-            if(e.response.status === 401) {
-                const error = {
-                    statusCode: e.response.data.statusCode,
-                    message: e.response.data.statusDescription
-                }
-                throw new FetchError(error)
-            }
-            throw new FetchError(e)
         }
     }
 
     async getAllNotifications(accessToken, idToken){
-        return await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification`);
+        return await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification`, false);
     }
 
     async getUserNotifications(accessToken, idToken, user){
-        const userNotifications = await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification/user/${user}`);
+        const userNotifications = await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification/user/${user}`, false);
 
         return userNotifications.sort(function (a,b){
             const convertedA = a.dateCreated.replaceAll('/', '-')
@@ -65,7 +65,7 @@ class Notifications {
     }
 
     async getUserUnreadNotifications(accessToken, idToken, user){
-        return await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification/user/${user}/unread`);
+        return await this._fetchNotification(accessToken, idToken, "GET", `/SdkRefImpl/api/sdk-ri/notification/user/${user}/unread`, false);
     }
 
     async markNotificationsAsRead(accessToken, idToken, notificationId){
@@ -119,14 +119,12 @@ class Notifications {
                 return resultData.data
             }
         } catch (e){
-            if(e.response.status === 401) {
-                const error = {
-                    statusCode: e.response.data.statusCode,
-                    message: e.response.data.statusDescription
-                }
-                throw new FetchError(error)
+            const errorObj = {
+                statusCode: e.response.data.statusCode,
+                statusDescription: e.response.data.statusDescription,
+                errorMessage: e.response.data.errorMessage ? JSON.parse(e.response.data.errorMessage) : ''
             }
-            throw new FetchError(e)
+            throw new FetchError(errorObj)
         }
     }
 }

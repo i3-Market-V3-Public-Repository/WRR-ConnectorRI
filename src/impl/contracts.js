@@ -37,16 +37,17 @@ class Contracts {
                 return resultData.data
             }
         } catch (e){
-            throw new FetchError(e)
+            const errorObj = {
+                statusCode: e.response.data.statusCode,
+                statusDescription: e.response.data.statusDescription,
+                errorMessage: e.response.data.errorMessage ? JSON.parse(e.response.data.errorMessage) : ''
+            }
+            throw new FetchError(errorObj)
         }
     }
 
     async getContractTemplate(accessToken, idToken, offeringId){
         return await this._fetchContract(accessToken, idToken, 'GET', `/SdkRefImpl/api/sdk-ri/contract/get-contract-template/${offeringId}`);
-    }
-
-    async createDataPurchase(accessToken, idToken, originMarketId, consumerDid, authorization, data){
-        return await this._fetchContract(accessToken, idToken, 'POST', `/SdkRefImpl/api/sdk-ri/contract/create-data-purchase?origin_market_id=${originMarketId}&consumer_did=${consumerDid}`, data, authorization)
     }
 
     async createAgreementRawTransaction(accessToken, idToken, senderAddress, data){

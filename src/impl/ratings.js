@@ -33,7 +33,12 @@ class Ratings {
             const res = await axios(config)
             return res.data
         } catch (e) {
-            throw new FetchError(e)
+            const errorObj = {
+                statusCode: e.response.data.statusCode,
+                statusDescription: e.response.data.statusDescription,
+                errorMessage: e.response.data.errorMessage ? JSON.parse(e.response.data.errorMessage) : ''
+            }
+            throw new FetchError(errorObj)
         }
     }
 
@@ -92,6 +97,6 @@ class Ratings {
     async deleteRating(id, accessToken, idToken){
         return this._fetchRatings(accessToken, idToken, "DELETE", `/SdkRefImpl/api/sdk-ri/rating/api/ratings/${id}`)
     }
-    
+
 }
 exports.Ratings = Ratings

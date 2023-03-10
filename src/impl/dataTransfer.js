@@ -1,7 +1,7 @@
 const Logger = require("js-logger");
 const axios = require("axios");
 const {FetchError} = require("./error");
-const _ = require("underscore");
+const AxiosDigestAuth = require('@mhoc/axios-digest-auth').default;
 
 class DataTransfer {
 
@@ -13,6 +13,7 @@ class DataTransfer {
 
         const headers = {
             'accept': 'application/json',
+            'Content-Type': 'application/json',
             'access_token': accessToken,
             'id_token': idToken
         }
@@ -37,43 +38,48 @@ class DataTransfer {
                 return resultData.data
             }
         } catch (e){
-            if(e.response.status === 404) {
-                Logger.error(e.response.data.statusDescription)
-                return []
+            const errorObj = {
+                statusCode: e.response.data.statusCode,
+                statusDescription: e.response.data.statusDescription,
+                errorMessage: e.response.data.errorMessage ? JSON.parse(e.response.data.errorMessage) : ''
             }
-            if(e.response.status === 401) {
-                const error = {
-                    statusCode: e.response.data.statusCode,
-                    message: e.response.data.statusDescription
-                }
-                throw new FetchError(error)
-            }
-            throw new FetchError(e)
+            throw new FetchError(errorObj)
         }
     }
 
     async publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest){
-        const result = await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/dataSharingAgreementInfo`, bodyRequest)
-        if(_.isEmpty(result)){
-            return []
-        }
-        return result
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/dataSharingAgreementInfo`, bodyRequest)
+    }
+
+    async getDataExchangeAgreement(accessToken, idToken, agreementId){
+        return await this._fetchData(accessToken, idToken, "POST", `/agreement/getDataExchangeAgreement/${agreementId}`)
+    }
+
+    async registerConnector(dataAccessEndpoint, bodyRequest){
+
+        const digestAuth = new AxiosDigestAuth({
+            username: "admin", password: "admin"
+        });
+
+        const response = await digestAuth.request({
+            headers: {
+                'Accept': "application/json",
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            url: `${dataAccessEndpoint}/regds`,
+            data: JSON.stringify(bodyRequest)
+        });
+
+        return response.data;
     }
 
     async payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){
-        const result = await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/payMarketFee/${agreementId}`, bodyRequest)
-        if(_.isEmpty(result)){
-            return []
-        }
-        return result
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/payMarketFee/${agreementId}`, bodyRequest)
     }
 
     async downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest){
-        const result = await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/batch/${data}/${agreementId}`, bodyRequest)
-        if(_.isEmpty(result)){
-            return []
-        }
-        return result
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/batch/${data}/${agreementId}`, bodyRequest)
     }
 
 }
