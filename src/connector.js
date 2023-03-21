@@ -239,8 +239,8 @@ class Connector {
         return await this.dataTransfer.publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest)
     }
 
-    async getDataExchangeAgreement(accessToken, idToken, agreementId){
-        return await this.dataTransfer.getDataExchangeAgreement(accessToken, idToken, agreementId)
+    async getDataExchangeAgreement(accessToken, idToken, dataAccessEndpoint, agreementId){
+        return await this.dataTransfer.getDataExchangeAgreement(accessToken, idToken, dataAccessEndpoint, agreementId)
     }
 
     async registerConnector(dataAccessEndpoint, bodyRequest){
@@ -249,6 +249,10 @@ class Connector {
 
     async payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){
         return await this.dataTransfer.payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest)
+    }
+
+    async getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, agreementId){
+        return await this.dataTransfer.getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, agreementId)
     }
 
     async downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest){

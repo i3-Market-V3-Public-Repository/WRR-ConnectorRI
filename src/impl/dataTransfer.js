@@ -33,10 +33,7 @@ class DataTransfer {
         let res
         try {
             res = await axios(config)
-            const resultData = res.data
-            if(resultData.data){
-                return resultData.data
-            }
+            return res.data;
         } catch (e){
             const errorObj = {
                 statusCode: e.response.data.statusCode,
@@ -51,12 +48,11 @@ class DataTransfer {
         return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/dataSharingAgreementInfo`, bodyRequest)
     }
 
-    async getDataExchangeAgreement(accessToken, idToken, agreementId){
-        return await this._fetchData(accessToken, idToken, "POST", `/agreement/getDataExchangeAgreement/${agreementId}`)
+    async getDataExchangeAgreement(accessToken, idToken, dataAccessEndpoint, agreementId){
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/getDataExchangeAgreement/${agreementId}`)
     }
 
     async registerConnector(dataAccessEndpoint, bodyRequest){
-
         const digestAuth = new AxiosDigestAuth({
             username: "admin", password: "admin"
         });
@@ -76,6 +72,10 @@ class DataTransfer {
 
     async payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){
         return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/payMarketFee/${agreementId}`, bodyRequest)
+    }
+
+    async getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, agreementId){
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "GET", `/batch/listDataSourceFiles/${agreementId}`)
     }
 
     async downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest){
