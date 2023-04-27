@@ -243,22 +243,29 @@ class Connector {
         return await this.dataTransfer.getDataExchangeAgreement(accessToken, idToken, dataAccessEndpoint, agreementId)
     }
 
-    async registerConnector(dataAccessEndpoint, bodyRequest){
-        return await this.dataTransfer.registerConnector(dataAccessEndpoint, bodyRequest)
+    async registerConnector(accessToken, idToken, dataAccessEndpoint, bodyRequest){
+        return await this.dataTransfer.registerConnector(accessToken, idToken, dataAccessEndpoint, bodyRequest)
     }
 
     async payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){
         return await this.dataTransfer.payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest)
     }
 
-    async getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, agreementId){
-        return await this.dataTransfer.getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, agreementId)
+    async deployRawPaymentTransaction(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest) {
+        return await this.dataTransfer.deployRawPaymentTransaction(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest)
+    }
+
+    async getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, offeringId){
+        return await this.dataTransfer.getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, offeringId)
     }
 
     async downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest){
         return await this.dataTransfer.downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest)
     }
 
+    async requestPop(accessToken, idToken, dataAccessEndpoint, bodyRequest){
+        return await this.dataTransfer.requestPop(accessToken, idToken, dataAccessEndpoint, bodyRequest);
+    }
     /*
      *
      * RATINGS

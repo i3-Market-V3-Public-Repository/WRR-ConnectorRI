@@ -13,16 +13,14 @@ class DataTransfer {
 
         const headers = {
             'accept': 'application/json',
-            'Content-Type': 'application/json',
-            'access_token': accessToken,
-            'id_token': idToken
+            'Authorization': `Bearer ${idToken}`,
+            'Content-Type': 'application/json'
         }
 
         const config = {
             url: url,
             method: method,
-            headers: headers,
-            redirect: 'follow',
+            headers: headers
         }
 
         if(bodyRequest)
@@ -36,23 +34,14 @@ class DataTransfer {
             return res.data;
         } catch (e){
             const errorObj = {
-                statusCode: e.response.data.statusCode,
-                statusDescription: e.response.data.statusDescription,
-                errorMessage: e.response.data.errorMessage ? JSON.parse(e.response.data.errorMessage) : ''
+                statusCode: e.response.status,
+                statusDescription: e.response.statusText
             }
             throw new FetchError(errorObj)
         }
     }
 
-    async publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest){
-        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/dataSharingAgreementInfo`, bodyRequest)
-    }
-
-    async getDataExchangeAgreement(accessToken, idToken, dataAccessEndpoint, agreementId){
-        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/getDataExchangeAgreement/${agreementId}`)
-    }
-
-    async registerConnector(dataAccessEndpoint, bodyRequest){
+    async registerConnector(accessToken, idToken, dataAccessEndpoint, bodyRequest){
         const digestAuth = new AxiosDigestAuth({
             username: "admin", password: "admin"
         });
@@ -70,16 +59,32 @@ class DataTransfer {
         return response.data;
     }
 
+    async publishDataSharing(accessToken, idToken, dataAccessEndpoint, bodyRequest){
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/dataSharingAgreementInfo`, bodyRequest)
+    }
+
+    async getDataExchangeAgreement(accessToken, idToken, dataAccessEndpoint, agreementId){
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "GET", `/agreement/getDataExchangeAgreement/${agreementId}`)
+    }
+
     async payMarketFee(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){
         return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/payMarketFee/${agreementId}`, bodyRequest)
     }
 
-    async getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, agreementId){
-        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "GET", `/batch/listDataSourceFiles/${agreementId}`)
+    async deployRawPaymentTransaction(accessToken, idToken, dataAccessEndpoint, agreementId, bodyRequest){
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/agreement/deployRawPaymentTransaction/${agreementId}`, bodyRequest)
+    }
+
+    async getListDataSourceFiles(accessToken, idToken, dataAccessEndpoint, offeringId){
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "GET", `/batch/listDataSourceFiles/${offeringId}`)
     }
 
     async downloadBatchData(accessToken, idToken, dataAccessEndpoint, agreementId, data, bodyRequest){
         return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/batch/${data}/${agreementId}`, bodyRequest)
+    }
+
+    async requestPop(accessToken, idToken, dataAccessEndpoint, bodyRequest){
+        return await this._fetchData(accessToken, idToken, dataAccessEndpoint, "POST", `/batch/pop/`, bodyRequest)
     }
 
 }
