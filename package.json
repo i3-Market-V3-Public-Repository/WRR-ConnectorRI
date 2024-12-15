@@ -6,7 +6,7 @@
   "dependencies": {
     "@mhoc/axios-digest-auth": "^0.8.0",
     "@stdlib/string-percent-encode": "~0.0.7",
-    "axios": "^0.23.0",
+    "axios": "^0.29.0",
     "base64url": "^3.0.1",
     "encodeurl": "^1.0.2",
     "js-logger": "^1.6.0",
